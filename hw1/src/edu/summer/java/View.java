@@ -5,6 +5,7 @@ package edu.summer.java;
  * Contains methods and constants responsible for informing the user.
  */
 public class View {
+    public static final String CORRECT_INPUT_MSG = "Received correct word.";
     public static final String WRONG_INPUT_MSG = "Received invalid word.";
     public static final String ALREADY_READ_TOKEN_MSG = "Word is already read.";
 
@@ -17,11 +18,18 @@ public class View {
     }
 
     /**
-     * Prints an message if error in input is encountered
-     * @param errMessage type of error message
-     * @param invalidToken invalid token value
+     * Prints a message as a response for token value.
+     * @param message message with additional info
+     * @param token token value
      */
-    public void     printErrorMessage(String errMessage, String invalidToken) {
-        System.err.println(errMessage + " Token: " + invalidToken);
+    public void     printInfoMessage(String message, String token) {
+        System.err.println(message + " Token: " + token);
+    }
+
+    /**
+     * Prints a message how to stop inputting data if final message is already read.
+     */
+    public void     printExitMessage() {
+        System.out.println("The message is read completely.\nTo exit the inputting enter Ctrl-D.");
     }
 }

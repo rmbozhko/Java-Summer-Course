@@ -33,22 +33,29 @@ public class Controller {
         Scanner scanner = new Scanner(System.in);
         String message = "";
 
+        System.out.println("Please, input the message [Hello world!]:");
         while (scanner.hasNext()) {
             String input = scanner.next();
             if (input.equals("Hello")) {
                 if (!message.contains("Hello")) {
+                    view.printInfoMessage(View.CORRECT_INPUT_MSG, input);
                     message += input + " ";
                 } else {
-                    view.printErrorMessage(View.ALREADY_READ_TOKEN_MSG, input);
+                    view.printInfoMessage(View.ALREADY_READ_TOKEN_MSG, input);
                 }
             } else if (input.equals("world!") && message.contains("Hello ")) {
                 if (!message.contains("world!")) {
+                    view.printInfoMessage(View.CORRECT_INPUT_MSG, input);
                     message += input;
                 } else {
-                    view.printErrorMessage(View.ALREADY_READ_TOKEN_MSG, input);
+                    view.printInfoMessage(View.ALREADY_READ_TOKEN_MSG, input);
                 }
             } else {
-                view.printErrorMessage(View.WRONG_INPUT_MSG, input);
+                if (message.equals("Hello world!")) {
+                    view.printExitMessage();
+                } else {
+                    view.printInfoMessage(View.WRONG_INPUT_MSG, input);
+                }
             }
         }
         scanner.close();
