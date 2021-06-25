@@ -8,7 +8,9 @@ public class View {
     public static final String CORRECT_INPUT_MSG = "Received correct word.";
     public static final String WRONG_INPUT_MSG = "Received invalid word.";
     public static final String ALREADY_READ_TOKEN_MSG = "Word is already read.";
-
+    public static final String UNCOMPLETED_MESSAGE_MSG = "Final message is not fully read.";
+    public static final String READ_MESSAGE_FULLY_MSG = "The message is read completely.\n" +
+                                                        "To exit the inputting enter Ctrl-D.";
     /**
      * Prints the message if it is fully read from user input
      * @param message a message to be printed
@@ -20,16 +22,8 @@ public class View {
     /**
      * Prints a message as a response for token value.
      * @param message message with additional info
-     * @param token token value
      */
-    public void     printInfoMessage(String message, String token) {
-        System.err.println(message + " Token: " + token);
-    }
-
-    /**
-     * Prints a message how to stop inputting data if final message is already read.
-     */
-    public void     printExitMessage() {
-        System.out.println("The message is read completely.\nTo exit the inputting enter Ctrl-D.");
+    public void     printInfoMessage(String message) {
+        System.out.println(message);
     }
 }

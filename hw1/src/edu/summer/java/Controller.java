@@ -21,44 +21,31 @@ public class Controller {
      * Running the process and displaying the message.
      */
     public void         runInputProcessing() {
-        model.setMessage(processInput());
-        view.printMessage(model.getMessage());
+        processInput();
+        if (Model.FINAL_MESSAGE.equals(model.getMessage())) {
+            view.printMessage(model.getMessage());
+        } else {
+            view.printInfoMessage(View.UNCOMPLETED_MESSAGE_MSG + " Incomplete message: " + model.getMessage());
+        }
     }
 
     /**
-     * Processing and validating the user input.
-     * @return message to be printed as a result of successful completion
+     * Processing and initial validation the user console input.
      */
-    private String     processInput() {
+    private void     processInput() {
         Scanner scanner = new Scanner(System.in);
-        String message = "";
+        String  inputResponse;
 
-        System.out.println("Please, input the message [Hello world!]:");
+        System.out.println("Please, transmit the message [Hello world!]:");
         while (scanner.hasNext()) {
             String input = scanner.next();
-            if (input.equals("Hello")) {
-                if (!message.contains("Hello")) {
-                    view.printInfoMessage(View.CORRECT_INPUT_MSG, input);
-                    message += input + " ";
-                } else {
-                    view.printInfoMessage(View.ALREADY_READ_TOKEN_MSG, input);
-                }
-            } else if (input.equals("world!") && message.contains("Hello ")) {
-                if (!message.contains("world!")) {
-                    view.printInfoMessage(View.CORRECT_INPUT_MSG, input);
-                    message += input;
-                } else {
-                    view.printInfoMessage(View.ALREADY_READ_TOKEN_MSG, input);
-                }
+            if (input.matches("[a-zA-Z]{5}!?")) {
+                inputResponse = model.validateInput(input);
             } else {
-                if (message.equals("Hello world!")) {
-                    view.printExitMessage();
-                } else {
-                    view.printInfoMessage(View.WRONG_INPUT_MSG, input);
-                }
+                inputResponse = View.WRONG_INPUT_MSG;
             }
+            view.printInfoMessage(inputResponse);
         }
         scanner.close();
-        return message;
     }
 }
