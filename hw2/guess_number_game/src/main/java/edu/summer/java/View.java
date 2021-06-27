@@ -3,6 +3,9 @@ package edu.summer.java;
 import java.util.List;
 
 public class View {
+    public static final String  INVALID_PATTERN_MSG = "Retrieved token does not match the integer pattern";
+    public static final String  INPUT_OUT_OF_BOUNDS_MSG = "Retrieved token is out of secret number bounds.";
+
     public String getInitialInformation(int lowerBound, int upperBound) {
         if (upperBound > lowerBound) {
             return String.format("I have secret number, which is within %d and %d. Try to guess it.",
