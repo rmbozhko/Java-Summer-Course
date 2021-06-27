@@ -11,7 +11,7 @@ public class ControllerTest {
 
     @BeforeAll
     public static void init() {
-        controller = new Controller();
+        controller = new Controller(new Model(), new View());
     }
 
     @Test

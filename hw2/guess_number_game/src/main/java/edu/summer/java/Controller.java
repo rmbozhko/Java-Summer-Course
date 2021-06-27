@@ -10,12 +10,12 @@ public class Controller {
     private int     lowerBound;
     private int     upperBound;
 
-    public Controller() {
+    public Controller(Model model, View view) {
         this.lowerBound = Model.SECRET_NUMBER_LOWER_BOUND;
         this.upperBound = Model.SECRET_NUMBER_UPPER_BOUND - 1;
         scanner = new Scanner(System.in);
-        model = new Model();
-        view = new View();
+        this.model = model;
+        this.view = view;
     }
 
     public int getUserConsoleInput() throws InputMismatchException {
@@ -31,14 +31,14 @@ public class Controller {
     }
 
     public void updateBounds(int bound) {
-        if (bound > model.getSecretNumber()) {
+        if (bound > model.getSecretNumber() && bound < upperBound) {
             upperBound = bound;
-        } else {
+        } else if (bound < model.getSecretNumber() && bound > lowerBound) {
             lowerBound = bound;
         }
     }
 
-    public void run() {
+    public void runApp() {
         int     input = -1;
 
         view.getInitialInformation(Model.SECRET_NUMBER_LOWER_BOUND, Model.SECRET_NUMBER_UPPER_BOUND - 1);
@@ -58,6 +58,7 @@ public class Controller {
                 }
             } catch (InputMismatchException e) {
                 System.err.println(View.INVALID_PATTERN_MSG);
+                scanner.next();
             }
         }
         view.getGameEndInformation();
