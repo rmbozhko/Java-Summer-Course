@@ -14,23 +14,21 @@ public class Model {
         guessesHistory = new ArrayList<>();
     }
 
+    public int getSecretNumber() {
+        return secretNumber;
+    }
+
+    public List<Integer> getGuessesHistory() {
+        return guessesHistory;
+    }
+
     boolean     checkIfCorrectGuess(int guessNumber) {
         guessesHistory.add(guessNumber);
         return guessNumber == secretNumber;
     }
 
-    public int getSecretNumber() {
-        return secretNumber;
-    }
-
     public boolean validateGuessNumber(int guessNumber) {
         return (guessNumber >= Model.SECRET_NUMBER_LOWER_BOUND &&
             guessNumber < Model.SECRET_NUMBER_UPPER_BOUND);
-    }
-
-    //!guessesHistory.contains(guessNumber)
-
-    public List<Integer> getGuessesHistory() {
-        return guessesHistory;
     }
 }

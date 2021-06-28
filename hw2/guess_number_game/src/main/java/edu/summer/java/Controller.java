@@ -1,6 +1,7 @@
 package edu.summer.java;
 
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Controller {
@@ -40,15 +41,16 @@ public class Controller {
 
     public void runApp() {
         int     input = -1;
+        boolean guessedSecretNumber = false;
 
         view.getInitialInformation(Model.SECRET_NUMBER_LOWER_BOUND, Model.SECRET_NUMBER_UPPER_BOUND - 1);
-        while (true) {
+        while (!guessedSecretNumber && scanner.hasNext()) {
             try {
                 input = getUserConsoleInput();
                 if (model.validateGuessNumber(input)) {
                     if (model.checkIfCorrectGuess(input)) {
+                        guessedSecretNumber = true;
                         System.out.println(view.getWinnerInformation(model.getGuessesHistory(), model.getSecretNumber()));
-                        break;
                     } else {
                         updateBounds(input);
                         System.out.println(view.getInformationBeforeGuess(getLowerBound(), getUpperBound()));
@@ -59,8 +61,11 @@ public class Controller {
             } catch (InputMismatchException e) {
                 System.err.println(View.INVALID_PATTERN_MSG);
                 scanner.next();
+            } catch (NoSuchElementException e) {
+                break;
             }
         }
-        view.getGameEndInformation();
+        System.out.println((guessedSecretNumber) ?
+            view.getGameEndInformation() : view.getLooserInformation());
     }
 }

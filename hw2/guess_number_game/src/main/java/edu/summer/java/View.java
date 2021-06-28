@@ -28,11 +28,16 @@ public class View {
     }
 
     public String getWinnerInformation(List<Integer> guessesHistory, int secretNumber) {
-        return String.format("Congrats! You guessed the secret number %d. It took %d " + ((guessesHistory.size() == 1) ? "try." : "tries.") +
+        return String.format("Congrats! You guessed the secret number %d. It took %d " +
+                ((guessesHistory.size() == 1) ? "try." : "tries.") +
                 "\nTries: " + guessesHistory, secretNumber, guessesHistory.size());
     }
 
     public String getGameEndInformation() {
         return "The game is finished. See you next time.";
+    }
+
+    public String getLooserInformation() {
+        return "Unfortunately there wasn't secret number among provided data. You will have better luck next time.";
     }
 }
