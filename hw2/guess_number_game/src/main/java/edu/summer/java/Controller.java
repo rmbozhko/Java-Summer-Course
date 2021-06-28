@@ -4,6 +4,10 @@ import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+/**
+ * Controller is responsible for primary user data validation and running the program core method.
+ * Contains references to Model and View.
+ */
 public class Controller {
     Scanner         scanner;
     Model           model;
@@ -19,6 +23,11 @@ public class Controller {
         this.view = view;
     }
 
+    /**
+     * Reads user input assuming integer should be provided.
+     * @return integer user input
+     * @throws InputMismatchException if user input doesn't match Integer pattern
+     */
     public int getUserConsoleInput() throws InputMismatchException {
         return scanner.nextInt();
     }
@@ -31,6 +40,10 @@ public class Controller {
         return upperBound;
     }
 
+    /**
+     * Updates bounds with parameter depending which one is closer to provided.
+     * @param bound is an update for upper- or lowerBound used with @see View#getInformationBeforeGuess()
+     */
     public void updateBounds(int bound) {
         if (bound > model.getSecretNumber() && bound < upperBound) {
             upperBound = bound;
@@ -39,6 +52,11 @@ public class Controller {
         }
     }
 
+    /**
+     * Core method of program.
+     * Calls @see Model for data comparison and further input validation.
+     * Calls @see View in case of game start, invalid input errors, steps hints, winning or loosing information.
+     */
     public void runApp() {
         int     input = -1;
         boolean guessedSecretNumber = false;
@@ -50,7 +68,8 @@ public class Controller {
                 if (model.validateGuessNumber(input)) {
                     if (model.checkIfCorrectGuess(input)) {
                         guessedSecretNumber = true;
-                        System.out.println(view.getWinnerInformation(model.getGuessesHistory(), model.getSecretNumber()));
+                        System.out.println(view.getWinnerInformation(model.getGuessesHistory(),
+                                                                    model.getSecretNumber()));
                     } else {
                         updateBounds(input);
                         System.out.println(view.getInformationBeforeGuess(getLowerBound(), getUpperBound()));
