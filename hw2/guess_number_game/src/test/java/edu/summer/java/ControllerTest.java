@@ -25,36 +25,18 @@ public class ControllerTest {
     }
 
     @Test
-    void checkUpdateLowerBound() {
-        int newLowerBound = controller.model.getSecretNumber() - 3;
-        controller.updateBounds(newLowerBound);
-        Assertions.assertEquals(newLowerBound, controller.getLowerBound());
-        Assertions.assertEquals(Model.SECRET_NUMBER_UPPER_BOUND - 1, controller.getUpperBound());
+    void checkIfGuessedNumberWithinRange() {
+        int guessNumber = (int)(Math.random() * SecretNumberInitialBounds.SECRET_NUMBER_UPPER_BOUND) +
+                                                SecretNumberInitialBounds.SECRET_NUMBER_LOWER_BOUND;
+        Assertions.assertTrue(controller.validateGuessNumber(guessNumber));
     }
 
     @Test
-    void checkRepetitiveUpdateLowerBound() {
-        int newLowerBound = controller.model.getSecretNumber() - 1;
-        controller.updateBounds(newLowerBound);
-        Assertions.assertEquals(newLowerBound, controller.getLowerBound());
-        Assertions.assertEquals(Model.SECRET_NUMBER_UPPER_BOUND - 1, controller.getUpperBound());
-    }
-
-    @Test
-    void checkUpdateUpperBound() {
-        int newUpperBound = controller.model.getSecretNumber() + 3;
-        int backupLowerBound = controller.getLowerBound();
-        controller.updateBounds(newUpperBound);
-        Assertions.assertEquals(newUpperBound, controller.getUpperBound());
-        Assertions.assertEquals(backupLowerBound, controller.getLowerBound());
-    }
-
-    @Test
-    void checkRepetitiveUpdateUpperBound() {
-        int newUpperBound = controller.model.getSecretNumber() + 1;
-        int backupLowerBound = controller.getLowerBound();
-        controller.updateBounds(newUpperBound);
-        Assertions.assertEquals(newUpperBound, controller.getUpperBound());
-        Assertions.assertEquals(backupLowerBound, controller.getLowerBound());
+    void checkIfGuessedNumberOutOfRange() {
+        // way to get out of range may not be universal
+        int guessNumber = (int)(Math.random() *
+                                Math.pow(SecretNumberInitialBounds.SECRET_NUMBER_UPPER_BOUND, 2.0)) +
+                                        SecretNumberInitialBounds.SECRET_NUMBER_LOWER_BOUND;
+        Assertions.assertFalse(controller.validateGuessNumber(guessNumber));
     }
 }

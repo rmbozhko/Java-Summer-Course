@@ -8,13 +8,15 @@ import java.util.List;
  * It contains guesses history which stores all valid user guesses.
  */
 public class Model {
-    public static final int SECRET_NUMBER_UPPER_BOUND = 101;
-    public static final int SECRET_NUMBER_LOWER_BOUND = 0;
-    private final int       secretNumber;
-    private List<Integer>   guessesHistory;
+    private final int           secretNumber;
+    private final List<Integer> guessesHistory;
+    private int                 lowerBound;
+    private int                 upperBound;
 
     public Model() {
-        this.secretNumber = (int)(Math.random() * 100);
+        lowerBound = SecretNumberInitialBounds.SECRET_NUMBER_LOWER_BOUND;
+        upperBound = SecretNumberInitialBounds.SECRET_NUMBER_UPPER_BOUND;
+        this.secretNumber = (int)(Math.random() * upperBound);
         guessesHistory = new ArrayList<>();
     }
 
@@ -26,6 +28,26 @@ public class Model {
         return guessesHistory;
     }
 
+    public int getLowerBound() {
+        return lowerBound;
+    }
+
+    public int getUpperBound() {
+        return upperBound;
+    }
+
+    /**
+     * Updates bounds with parameter depending which one is closer to provided.
+     * @param bound is an update for upper- or lowerBound used with @see View#getInformationBeforeGuess()
+     */
+    public void updateBounds(int bound) {
+        if (bound > getSecretNumber() && bound < upperBound) {
+            upperBound = bound;
+        } else if (bound < getSecretNumber() && bound > lowerBound) {
+            lowerBound = bound;
+        }
+    }
+
     /**
      * Checks if provided parameter equals to secretNumber and stores it into guessesHistory for statistics.
      * @param guessNumber validated user data
@@ -34,15 +56,5 @@ public class Model {
     boolean     checkIfCorrectGuess(int guessNumber) {
         guessesHistory.add(guessNumber);
         return guessNumber == secretNumber;
-    }
-
-    /**
-     * Checks if provided parameter is within secret number bounds.
-     * @param guessNumber potentially correct user data
-     * @return result of within-bounds check
-     */
-    public boolean validateGuessNumber(int guessNumber) {
-        return (guessNumber >= Model.SECRET_NUMBER_LOWER_BOUND &&
-            guessNumber < Model.SECRET_NUMBER_UPPER_BOUND);
     }
 }

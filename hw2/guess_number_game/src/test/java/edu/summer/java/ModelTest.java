@@ -33,19 +33,6 @@ public class ModelTest {
     }
 
     @Test
-    void checkIfGuessedNumberWithinRange() {
-        int guessNumber = (int)(Math.random() * Model.SECRET_NUMBER_UPPER_BOUND) + Model.SECRET_NUMBER_LOWER_BOUND;
-        Assertions.assertTrue(model.validateGuessNumber(guessNumber));
-    }
-
-    @Test
-    void checkIfGuessedNumberOutOfRange() {
-        // way to get out of range may not be universal
-        int guessNumber = (int)(Math.random() * Math.pow(Model.SECRET_NUMBER_UPPER_BOUND, 2.0)) + Model.SECRET_NUMBER_LOWER_BOUND;
-        Assertions.assertFalse(model.validateGuessNumber(guessNumber));
-    }
-
-    @Test
     void checkStoredGuessesHistory() {
         try {
             Field guessesHistory = model.getClass().getDeclaredField("guessesHistory");
@@ -60,5 +47,39 @@ public class ModelTest {
             guesses.add(i);
         }
         Assertions.assertEquals(guesses, model.getGuessesHistory());
+    }
+
+    @Test
+    void checkUpdateLowerBound() {
+        int newLowerBound = model.getSecretNumber() - 3;
+        model.updateBounds(newLowerBound);
+        Assertions.assertEquals(newLowerBound, model.getLowerBound());
+        Assertions.assertEquals(SecretNumberInitialBounds.SECRET_NUMBER_UPPER_BOUND, model.getUpperBound());
+    }
+
+    @Test
+    void checkRepetitiveUpdateLowerBound() {
+        int newLowerBound = model.getSecretNumber() - 1;
+        model.updateBounds(newLowerBound);
+        Assertions.assertEquals(newLowerBound, model.getLowerBound());
+        Assertions.assertEquals(SecretNumberInitialBounds.SECRET_NUMBER_UPPER_BOUND, model.getUpperBound());
+    }
+
+    @Test
+    void checkUpdateUpperBound() {
+        int newUpperBound = model.getSecretNumber() + 3;
+        int backupLowerBound = model.getLowerBound();
+        model.updateBounds(newUpperBound);
+        Assertions.assertEquals(newUpperBound, model.getUpperBound());
+        Assertions.assertEquals(backupLowerBound, model.getLowerBound());
+    }
+
+    @Test
+    void checkRepetitiveUpdateUpperBound() {
+        int newUpperBound = model.getSecretNumber() + 1;
+        int backupLowerBound = model.getLowerBound();
+        model.updateBounds(newUpperBound);
+        Assertions.assertEquals(newUpperBound, model.getUpperBound());
+        Assertions.assertEquals(backupLowerBound, model.getLowerBound());
     }
 }

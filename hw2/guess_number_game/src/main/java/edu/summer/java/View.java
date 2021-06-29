@@ -72,4 +72,8 @@ public class View {
     public String getLooserInformation() {
         return "Unfortunately, there wasn't secret number among provided data. You will have better luck next time.";
     }
+
+    public void print(String message) {
+        System.out.println(message);
+    }
 }
