@@ -1,7 +1,7 @@
 # Java-Summer-Course
-Java online crash course during summer 2021
+Java summer online crash course
 
-### Direcotry summaries
+### Directories summary
 <details>
   <summary>HW1</summary>
   <p>Command-line app based on MVC design pattern</p>
