@@ -32,3 +32,8 @@ hs_err_pid*
 *.idx
 *.txt
 *.html
+
+# IntellijIdea files
+*.iml
+.idea
+out
