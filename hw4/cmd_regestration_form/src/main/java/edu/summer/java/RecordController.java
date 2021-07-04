@@ -34,13 +34,14 @@ public class RecordController {
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         String  nicknamePattern = "^[^0-9][^@#$%\\\\*]+$";
         String  cyrrilicNamesPattern = "[\\p{L}'-]+";
+        RecordModelBuilder builder = new RecordModelBuilder();
 
-        String name = readInput(scanner, "Ім'я: ", input -> input.matches(cyrrilicNamesPattern));
-        String surname = readInput(scanner, "Призвіще: ", input -> input.matches(cyrrilicNamesPattern));
-        String fatherName = readInput(scanner, "По-батькові: ", input -> input.matches(cyrrilicNamesPattern));
-        String nickname = readInput(scanner, "Нікнейм: ", input -> input.matches(nicknamePattern));
+        builder.setName(readInput(scanner, "Ім'я: ", input -> input.matches(cyrrilicNamesPattern)));
+        builder.setSurname(readInput(scanner, "Призвіще: ", input -> input.matches(cyrrilicNamesPattern)));
+        builder.setFatherName(readInput(scanner, "По-батькові: ", input -> input.matches(cyrrilicNamesPattern)));
+        builder.setNickname(readInput(scanner, "Нікнейм: ", input -> input.matches(nicknamePattern)));
         scanner.close();
-        return new RecordModel(name, surname, fatherName, nickname);
+        return builder.getRecord();
     }
 
     public void processInput() {
