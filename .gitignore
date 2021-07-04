@@ -32,6 +32,10 @@ hs_err_pid*
 *.idx
 *.txt
 *.html
+*.png
+*.jpeg
+gradlew
+gradlew.bat
 
 # IntellijIdea files
 *.iml
