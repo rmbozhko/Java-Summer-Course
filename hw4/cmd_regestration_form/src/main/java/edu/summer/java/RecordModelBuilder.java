@@ -1,7 +1,12 @@
 package edu.summer.java;
 
+/**
+ * Class RecordModelBuilder implements a Builder pattern for RecordModel class.
+ * @see RecordModel
+ * @author Roman Bozhko
+ * @version 1.0
+ */
 public class RecordModelBuilder implements RecordBuilder {
-
     private String name;
     private String surname;
     private String fatherName;

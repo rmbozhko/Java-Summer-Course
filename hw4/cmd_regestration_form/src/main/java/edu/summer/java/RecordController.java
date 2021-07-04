@@ -4,19 +4,30 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 import java.util.Scanner;
 
+/**
+ * Class RecordController is responsible for reading and primary validation the user data.
+ * Contains references to:
+ * @see RecordModel
+ * @see RecordView
+ * @author Roman Bozhko
+ * @version 1.0
+ */
 public class RecordController {
-    RecordModel     model;
-    RecordView      view;
+    private RecordModel     model;
+    private RecordView      view;
 
     public RecordController(RecordView view) {
         this.view = view;
     }
 
-    public boolean inputIsValid(String input, Predicate<String> condition) {
+    private boolean inputIsValid(String input, Predicate<String> condition) {
         return condition.test(input);
     }
 
-    public String   readInput(Scanner scanner, String info, Predicate<String> condition) {
+    /*
+    * Scans console input until input is validated.
+     */
+    private String   readInput(Scanner scanner, String info, Predicate<String> condition) {
         view.print(info);
         String input = scanner.nextLine();
         while (true) {
@@ -30,6 +41,12 @@ public class RecordController {
         return input;
     }
 
+    /**
+     * Constructs RecordModel instances by reading and validating with regex user console input.
+     * @return instance of RecordModel constructed by RecordModelBuilder
+     * @see RecordModel
+     * @see RecordModelBuilder#getRecord()
+     */
     public RecordModel  makeRecord() {
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         String  nicknamePattern = "^[^0-9][^@#$%\\\\*]+$";
@@ -44,6 +61,11 @@ public class RecordController {
         return builder.getRecord();
     }
 
+    /**
+     * Sets reference to the created RecordModel and prints out its content.
+     * @see #makeRecord()
+     * @see RecordView#println(RecordModel)
+     */
     public void processInput() {
         this.setModel(makeRecord());
         view.println(this.getModel());
