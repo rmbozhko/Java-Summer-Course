@@ -30,6 +30,7 @@ public class   RecordView {
      */
     public void println(RecordModel model) {
         PrintStream ps = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        ps.println("--------Запис--------");
         ps.println(model);
     }
 
