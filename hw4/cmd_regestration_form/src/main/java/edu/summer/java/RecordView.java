@@ -4,11 +4,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Class RecordView contains methods used for user informing:
- * - invalid input
- * - general info
- * - RecordModel content
- * @see RecordModel
+ * Class RecordView contains methods used for user informing.
  * @author Roman Bozhko
  * @version 1.0
  */
