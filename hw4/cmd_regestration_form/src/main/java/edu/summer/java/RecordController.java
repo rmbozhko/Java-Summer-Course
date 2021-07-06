@@ -1,6 +1,7 @@
 package edu.summer.java;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.Scanner;
 
@@ -15,8 +16,10 @@ import java.util.Scanner;
 public class RecordController {
     private RecordModel     model;
     private RecordView      view;
+    private ResourceBundle  bundle;
 
-    public RecordController(RecordView view) {
+    public RecordController(ResourceBundle bundle, RecordView view) {
+        this.bundle = bundle;
         this.view = view;
     }
 
@@ -34,7 +37,7 @@ public class RecordController {
             if (inputIsValid(input, condition)) {
                 break;
             } else {
-                view.println("Invalid input.Try again.");
+                view.println(bundle.getString("message.input.wrong"));
                 input = scanner.nextLine();
             }
         }
@@ -53,10 +56,18 @@ public class RecordController {
         String  cyrrilicNamesPattern = "[\\p{L}'-]+";
         RecordModelBuilder builder = new RecordModelBuilder();
 
-        builder.setName(readInput(scanner, "Ім'я: ", input -> input.matches(cyrrilicNamesPattern)));
-        builder.setSurname(readInput(scanner, "Призвіще: ", input -> input.matches(cyrrilicNamesPattern)));
-        builder.setFatherName(readInput(scanner, "По-батькові: ", input -> input.matches(cyrrilicNamesPattern)));
-        builder.setNickname(readInput(scanner, "Нікнейм: ", input -> input.matches(nicknamePattern)));
+        builder.setName(readInput(scanner,
+                                    bundle.getString("message.input.form.name"),
+                                    input -> input.matches(cyrrilicNamesPattern)));
+        builder.setSurname(readInput(scanner,
+                                    bundle.getString("message.input.form.surname"),
+                                    input -> input.matches(cyrrilicNamesPattern)));
+        builder.setFatherName(readInput(scanner,
+                                        bundle.getString("message.input.form.fatherName"),
+                                        input -> input.matches(cyrrilicNamesPattern)));
+        builder.setNickname(readInput(scanner,
+                                    bundle.getString("message.input.form.nickname"),
+                                    input -> input.matches(nicknamePattern)));
         scanner.close();
         return builder.getRecord();
     }

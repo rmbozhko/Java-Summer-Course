@@ -36,8 +36,7 @@ public class RecordModel {
 
     @Override
     public String toString() {
-        return "ПІБ: " + surname + ' ' + name.charAt(0) + ".\n" +
-                "Нікнейм: " + nickname;
+        return surname + ' ' + name.charAt(0) + ".\n" + nickname;
     }
 
     @Override

@@ -1,5 +1,8 @@
 package edu.summer.java;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 /**
  * Program entry point.
  * @author Roman Bozhko
@@ -7,6 +10,7 @@ package edu.summer.java;
  */
 public class Main {
     public static void main(String[] args) {
-        new RecordController(new RecordView()).processInput();
+        new RecordController(ResourceBundle.getBundle("constants", new Locale(args[0])),
+                            new RecordView()).processInput();
     }
 }

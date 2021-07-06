@@ -5,17 +5,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class RecordControllerTest {
     private static RecordController    controller;
 
     @BeforeAll
     public static void  init() {
-        controller = new RecordController(new RecordView());
+        controller = new RecordController(ResourceBundle.getBundle("constants", new Locale("uk")), new RecordView());
     }
 
     @Test
