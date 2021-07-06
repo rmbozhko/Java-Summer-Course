@@ -52,22 +52,20 @@ public class RecordController {
      */
     public RecordModel  makeRecord() {
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-        String  nicknamePattern = "^[^0-9][^@#$%\\\\*]+$";
-        String  cyrrilicNamesPattern = "[\\p{L}'-]+";
         RecordModelBuilder builder = new RecordModelBuilder();
 
         builder.setName(readInput(scanner,
                                     bundle.getString("message.input.form.name"),
-                                    input -> input.matches(cyrrilicNamesPattern)));
+                                    input -> input.matches(bundle.getString("regex.input.form.name"))));
         builder.setSurname(readInput(scanner,
                                     bundle.getString("message.input.form.surname"),
-                                    input -> input.matches(cyrrilicNamesPattern)));
+                                    input -> input.matches(bundle.getString("regex.input.form.name"))));
         builder.setFatherName(readInput(scanner,
                                         bundle.getString("message.input.form.fatherName"),
-                                        input -> input.matches(cyrrilicNamesPattern)));
+                                        input -> input.matches(bundle.getString("regex.input.form.name"))));
         builder.setNickname(readInput(scanner,
                                     bundle.getString("message.input.form.nickname"),
-                                    input -> input.matches(nicknamePattern)));
+                                    input -> input.matches(bundle.getString("regex.input.form.nickname"))));
         scanner.close();
         return builder.getRecord();
     }
