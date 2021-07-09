@@ -1,4 +1,4 @@
-package edu.summer.java;
+package edu.summer.java.model;
 
 /**
  * Class RecordModel contains fields used to represent regular online platform user.
@@ -46,9 +46,6 @@ public class RecordModel {
 
         RecordModel that = (RecordModel) o;
 
-        if (!getName().equals(that.getName())) return false;
-        if (!getSurname().equals(that.getSurname())) return false;
-        if (!getFatherName().equals(that.getFatherName())) return false;
         return getNickname().equals(that.getNickname());
     }
 

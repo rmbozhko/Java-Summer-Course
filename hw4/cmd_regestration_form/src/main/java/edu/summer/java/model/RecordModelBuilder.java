@@ -1,4 +1,4 @@
-package edu.summer.java;
+package edu.summer.java.model;
 
 /**
  * Class RecordModelBuilder implements a Builder pattern for RecordModel class.

@@ -1,4 +1,6 @@
-package edu.summer.java;
+package edu.summer.java.controller;
+
+import edu.summer.java.view.RecordView;
 
 import java.util.ResourceBundle;
 

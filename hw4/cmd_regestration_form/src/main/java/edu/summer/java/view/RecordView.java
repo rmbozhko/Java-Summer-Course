@@ -1,7 +1,10 @@
-package edu.summer.java;
+package edu.summer.java.view;
+
+import edu.summer.java.model.RecordModel;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * Class RecordView contains methods used for user informing.
@@ -21,12 +24,12 @@ public class   RecordView {
 
     /**
      * Prints content of RecordModel instance.
-     * @param model instance of RecordModel
+     * @param records instance of RecordModel
      * @see RecordModel
      */
-    public void println(RecordModel model) {
+    public void println(List<RecordModel> records) {
         PrintStream ps = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        ps.println(model);
+        records.forEach(ps::println);
     }
 
     /**

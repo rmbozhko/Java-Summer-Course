@@ -1,5 +1,7 @@
 package edu.summer.java;
 
+import edu.summer.java.controller.Controller;
+
 import java.util.Locale;
 import java.util.ResourceBundle;
 

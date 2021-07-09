@@ -1,4 +1,4 @@
-package edu.summer.java;
+package edu.summer.java.model;
 
 /**
  * RecordBuilder contains base methods for various types of RecordBuilders.
