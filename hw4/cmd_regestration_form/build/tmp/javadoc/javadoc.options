@@ -1,0 +1,12 @@
+-classpath 'D:\\private\\prog\\java_summer_course\\hw4\\cmd_regestration_form\\build\\classes\\java\\main;D:\\private\\prog\\java_summer_course\\hw4\\cmd_regestration_form\\build\\resources\\main'
+-d 'D:\\private\\prog\\java_summer_course\\hw4\\cmd_regestration_form\\build\\docs\\javadoc'
+-doctitle 'cmd_regestration_form 1.0-SNAPSHOT API'
+-notimestamp 
+-quiet 
+-windowtitle 'cmd_regestration_form 1.0-SNAPSHOT API'
+'D:\\private\\prog\\java_summer_course\\hw4\\cmd_regestration_form\\src\\main\\java\\edu\\summer\\java\\Main.java'
+'D:\\private\\prog\\java_summer_course\\hw4\\cmd_regestration_form\\src\\main\\java\\edu\\summer\\java\\RecordBuilder.java'
+'D:\\private\\prog\\java_summer_course\\hw4\\cmd_regestration_form\\src\\main\\java\\edu\\summer\\java\\RecordController.java'
+'D:\\private\\prog\\java_summer_course\\hw4\\cmd_regestration_form\\src\\main\\java\\edu\\summer\\java\\RecordModel.java'
+'D:\\private\\prog\\java_summer_course\\hw4\\cmd_regestration_form\\src\\main\\java\\edu\\summer\\java\\RecordModelBuilder.java'
+'D:\\private\\prog\\java_summer_course\\hw4\\cmd_regestration_form\\src\\main\\java\\edu\\summer\\java\\RecordView.java'

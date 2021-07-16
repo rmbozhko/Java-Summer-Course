@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="edu.summer.java.StudentTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2021-07-10T09:13:24" hostname="RBOZHKO" time="0.069">
+  <properties/>
+  <testcase name="testEqualsSymmetricProperty()" classname="edu.summer.java.StudentTest" time="0.033"/>
+  <testcase name="testEqualsTransitiveProperty()" classname="edu.summer.java.StudentTest" time="0.002"/>
+  <testcase name="testEqualsReflexiveProperty()" classname="edu.summer.java.StudentTest" time="0.002"/>
+  <testcase name="testEqualsDifferentClassInstance()" classname="edu.summer.java.StudentTest" time="0.004"/>
+  <testcase name="testHashCodeSameObjects()" classname="edu.summer.java.StudentTest" time="0.004"/>
+  <testcase name="testEqualsNullProperty()" classname="edu.summer.java.StudentTest" time="0.001"/>
+  <testcase name="testEqualsConsistentProperty()" classname="edu.summer.java.StudentTest" time="0.003"/>
+  <testcase name="testHashCodeDifferentObject()" classname="edu.summer.java.StudentTest" time="0.004"/>
+  <testcase name="testHashCodeSameReferences()" classname="edu.summer.java.StudentTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

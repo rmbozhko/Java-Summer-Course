@@ -1,0 +1,10 @@
+-classpath 'D:\\private\\prog\\java_summer_course\\hw2\\guess_number_game\\build\\classes\\java\\main;D:\\private\\prog\\java_summer_course\\hw2\\guess_number_game\\build\\resources\\main'
+-d 'D:\\private\\prog\\java_summer_course\\hw2\\guess_number_game\\build\\docs\\javadoc'
+-doctitle 'guess_number_game 1.0-SNAPSHOT API'
+-notimestamp 
+-quiet 
+-windowtitle 'guess_number_game 1.0-SNAPSHOT API'
+'D:\\private\\prog\\java_summer_course\\hw2\\guess_number_game\\src\\main\\java\\edu\\summer\\java\\Controller.java'
+'D:\\private\\prog\\java_summer_course\\hw2\\guess_number_game\\src\\main\\java\\edu\\summer\\java\\Main.java'
+'D:\\private\\prog\\java_summer_course\\hw2\\guess_number_game\\src\\main\\java\\edu\\summer\\java\\Model.java'
+'D:\\private\\prog\\java_summer_course\\hw2\\guess_number_game\\src\\main\\java\\edu\\summer\\java\\View.java'

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 final public class User {
-    private final String    name;
-    private final Integer   age;
+    private String    name;
+    private Integer   age;
     private List<Post>      posts;
 
     public User(String name, Integer age, List<Post> posts) {
@@ -23,6 +23,18 @@ final public class User {
 
     public Integer getAge() {
         return age;
+    }
+
+    public User setName(String name) {
+        return new User(name, this.age, this.getPosts());
+    }
+
+    public User setAge(Integer age) {
+        return new User(this.name, age, this.getPosts());
+    }
+
+    public User setPosts(List<Post> posts) {
+        return new User(this.name, this.age, posts);
     }
 
     public List<Post> getPosts() {

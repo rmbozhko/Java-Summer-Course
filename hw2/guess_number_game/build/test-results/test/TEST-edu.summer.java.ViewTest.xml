@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="edu.summer.java.ViewTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2021-06-29T18:10:05" hostname="RBOZHKO" time="0.111">
+  <properties/>
+  <testcase name="checkInitialInformationDisplayBoundsAreSame()" classname="edu.summer.java.ViewTest" time="0.034"/>
+  <testcase name="checkGameEndInformation()" classname="edu.summer.java.ViewTest" time="0.003"/>
+  <testcase name="checkInformationBeforeGuessDisplayWithWrongBounds()" classname="edu.summer.java.ViewTest" time="0.002"/>
+  <testcase name="checkInitialInformationDisplayWithWrongBounds()" classname="edu.summer.java.ViewTest" time="0.003"/>
+  <testcase name="checkInitialInformation()" classname="edu.summer.java.ViewTest" time="0.003"/>
+  <testcase name="checkInformationBeforeGuessDisplayBoundsAreSame()" classname="edu.summer.java.ViewTest" time="0.002"/>
+  <testcase name="checkWinnerInformationWithShortGuessesHistory()" classname="edu.summer.java.ViewTest" time="0.042"/>
+  <testcase name="checkInformationBeforeGuess()" classname="edu.summer.java.ViewTest" time="0.003"/>
+  <testcase name="checkWinnerInformationWithLongGuessesHistory()" classname="edu.summer.java.ViewTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
