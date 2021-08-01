@@ -104,19 +104,12 @@ public class GreetingController {
         return "catalogue";
     }
 
-    @PostMapping("search/{searchParameter}")
-    public String   searchByTitle(@PathVariable String searchParameter,
-                                  @RequestParam(defaultValue = "") String parameter,
+    @PostMapping("search")
+    public String   searchByTitle(@RequestParam(defaultValue = "") String parameter,
                                   Model model) {
         Iterable<Book> books;
         if (parameter != null && !parameter.isEmpty()) {
-            if (searchParameter.equals("byTitle")) {
-                books = bookRepository.findByTitle(parameter);
-            } else if (searchParameter.equals("byAuthor")) {
-                books = bookRepository.findByAuthor(parameter);
-            } else {
-                books = bookRepository.findAll();
-            }
+            books = bookRepository.findAllByTitleOrAuthorOrISBN(parameter, parameter, parameter);
         } else {
             books = bookRepository.findAll();
         }

@@ -6,63 +6,10 @@
     <div>
         <@auth.logout />
     </div>
-    <div>
-        Add supervisor
-        <form method="post" action="/supervisor/add">
-            <input type="hidden" name="_csrf" value="${_csrf.token}" />
-            <input type="text" name="title" placeholder="Title"/>
-            <input type="text" name="author" placeholder="Author"/>
-            <input type="text" name="publisher" placeholder="Publisher"/>
-            <input type="date" name="publishingDate" placeholder="Date of publishing" />
-            <input type="text" name="ISBN" placeholder="ISBN" />
-            <input type="number" name="quantity" placeholder="Number of books" />
-            <button type="submit">Add the book</button>
-        </form>
-    </div>
-    <div>
-        Add book
-        <form method="post" action="/book/add">
-            <input type="hidden" name="_csrf" value="${_csrf.token}" />
-            <input type="text" name="title" placeholder="Title"/>
-            <input type="text" name="author" placeholder="Author"/>
-            <input type="text" name="publisher" placeholder="Publisher"/>
-            <input type="date" name="publishingDate" placeholder="Date of publishing" />
-            <input type="text" name="ISBN" placeholder="ISBN" />
-            <input type="number" name="quantity" placeholder="Number of books" />
-            <button type="submit">Add the book</button>
-        </form>
-    </div>
-    <div>
-        Delete book
-        <form method="post" action="/book/delete">
-            <input type="hidden" name="_csrf" value="${_csrf.token}" />
-            <input type="text" name="ISBN" placeholder="ISBN" />
-            <button type="submit">Delete the book</button>
-        </form>
-    </div>
-    <div>
-        Update book
-        <form method="post" action="/book/update">
-            <input type="hidden" name="_csrf" value="${_csrf.token}" />
-            <input type="text" name="title" placeholder="Title"/>
-            <input type="text" name="author" placeholder="Author"/>
-            <input type="text" name="publisher" placeholder="Publisher"/>
-            <input type="date" name="publishingDate" placeholder="Date of publishing" />
-            <input type="text" name="ISBN" placeholder="ISBN" required/>
-            <input type="number" name="quantity" placeholder="Number of books" />
-            <button type="submit">Update the book</button>
-        </form>
-    </div>
-    <div>Books' catalogue</div>
-    <form method="post" action="search/byAuthor">
+    <form method="post" action="search">
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
-        <input type="text" name="parameter" placeholder="Author's name">
-        <button type="submit">Enter</button>
-    </form>
-    <form method="post" action="search/byTitle">
-        <input type="hidden" name="_csrf" value="${_csrf.token}" />
-        <input type="text" name="parameter" placeholder="Book's title">
-        <button type="submit">Enter</button>
+        <input type="text" name="parameter" placeholder="Title, author or ISBN">
+        <button type="submit">Search for a book</button>
     </form>
     <form method="post" action="sort">
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
