@@ -21,10 +21,13 @@ public class User implements UserDetails {
     private Integer           id;
 
     @NonNull
+    @Column(nullable = false, unique = true)
     private String       username;
     @NonNull
+    @Column(nullable = false)
     private String       password;
     @NonNull
+    @Column(nullable = true)
     private boolean      active;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

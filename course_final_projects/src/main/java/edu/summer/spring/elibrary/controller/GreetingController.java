@@ -12,15 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Locale;
+import java.util.Optional;
 
 @Controller
 public class GreetingController {
@@ -38,9 +37,9 @@ public class GreetingController {
     private UserRepository  userRepository;
 
     @GetMapping
-    public String   index(Map<String, Object> model) {
+    public String   index(Model model) {
         Iterable<Book> books = bookRepository.findAll();
-        model.put("books", books);
+        model.addAttribute("books", books);
         return "catalogue";
     }
 
@@ -52,13 +51,13 @@ public class GreetingController {
                             @RequestParam String publishingDate,
                             @RequestParam String ISBN,
                             @RequestParam Integer quantity,
-                            Map<String, Object> model) {
+                            Model model) {
         bookRepository.save(new Book(title, author, publisher,
                                     LocalDate.parse(publishingDate,
                                             DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)),
                                     ISBN, quantity));
         Iterable<Book> books = bookRepository.findAll();
-        model.put("books", books);
+        model.addAttribute("books", books);
 
         return "catalogue";
     }
@@ -67,14 +66,14 @@ public class GreetingController {
     @PostMapping("/book/delete")
     public String   deleteBook(@AuthenticationPrincipal User user,
                             @RequestParam String ISBN,
-                            Map<String, Object> model) {
+                            Model model) {
         Optional<Book> bookToDelete = bookRepository.findBookByISBN(ISBN);
         if (bookToDelete.isPresent()) {
-            loanRepository.deleteLoansByBook_Id(bookToDelete.get().getId()); // every loan with book to delete will be deleted
+            loanRepository.deleteLoansByBook(bookToDelete.get()); // every loan with book to delete will be deleted
             bookRepository.deleteBookByISBN(ISBN); // return value should be 1
         }
         Iterable<Book> books = bookRepository.findAll();
-        model.put("books", books);
+        model.addAttribute("books", books);
 
         return "catalogue";
     }
@@ -86,7 +85,7 @@ public class GreetingController {
                             @RequestParam(required = false) String publishingDate,
                             @RequestParam(required = true) String ISBN,
                             @RequestParam(required = false) Integer quantity,
-                            Map<String, Object> model) {
+                            Model model) {
         Optional<Book> bookToUpdate = bookRepository.findBookByISBN(ISBN);
         if (bookToUpdate.isPresent()) {
             Book book = bookToUpdate.get();
@@ -100,15 +99,15 @@ public class GreetingController {
             bookRepository.save(book);
         }
         Iterable<Book> books = bookRepository.findAll();
-        model.put("books", books);
+        model.addAttribute("books", books);
 
         return "catalogue";
     }
 
     @PostMapping("search/{searchParameter}")
     public String   searchByTitle(@PathVariable String searchParameter,
-                                  @RequestParam String parameter,
-                                  Map<String, Object> model) {
+                                  @RequestParam(defaultValue = "") String parameter,
+                                  Model model) {
         Iterable<Book> books;
         if (parameter != null && !parameter.isEmpty()) {
             if (searchParameter.equals("byTitle")) {
@@ -121,14 +120,14 @@ public class GreetingController {
         } else {
             books = bookRepository.findAll();
         }
-        model.put("books", books);
-
+        model.addAttribute("books", books);
+        model.addAttribute("parameter", parameter);
         return "catalogue";
     }
 
     @PostMapping("sort")
     public String   sortByProperty(@RequestParam(value = "sortProperty", required = false) String sortPropertyValue,
-                                   Map<String, Object> model) {
+                                   Model model) {
         Iterable<Book> books;
         if (sortPropertyValue == null) {
             books = bookRepository.findAll();
@@ -143,25 +142,25 @@ public class GreetingController {
         } else {
             books = bookRepository.findAll();
         }
-        model.put("books", books);
+        model.addAttribute("books", books);
         return "catalogue";
     }
 
     @GetMapping("/book/{id}")
     public String   getBook(@PathVariable String id,
-                            Map<String, Object> model) {
+                            Model model) {
         Optional<Book> foundBook = bookRepository.findById(Integer.valueOf(id));
 
         foundBook.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
         Book book = foundBook.get();
-        model.put("id", book.getId());
-        model.put("title", book.getTitle());
-        model.put("author", book.getAuthor());
-        model.put("publisher", book.getPublisher());
-        model.put("publishingDate", book.getPublishingDate().toString());
-        model.put("ISBN", book.getISBN());
-        model.put("quantity", book.getQuantity());
+        model.addAttribute("id", book.getId());
+        model.addAttribute("title", book.getTitle());
+        model.addAttribute("author", book.getAuthor());
+        model.addAttribute("publisher", book.getPublisher());
+        model.addAttribute("publishingDate", book.getPublishingDate().toString());
+        model.addAttribute("ISBN", book.getISBN());
+        model.addAttribute("quantity", book.getQuantity());
 
         return "book";
     }
@@ -169,7 +168,7 @@ public class GreetingController {
     @GetMapping("/order/{id}")
     public String   orderBook(@PathVariable String id,
                               @AuthenticationPrincipal User user,
-                              Map<String, Object> model) {
+                              Model model) {
         Optional<Book> foundBook = bookRepository.findById(Integer.valueOf(id));
         foundBook.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
         Book book;
@@ -183,16 +182,18 @@ public class GreetingController {
             } else {
                 subscription = new Subscription(user);
                 subscriptionRepository.save(subscription);
+                user.setSubscription(subscription);
+                userRepository.save(user);
             }
-            user.setSubscription(subscription);
-            userRepository.save(user);
-            Loan loan = new Loan(book, LocalDate.now(), LocalDate.now().plusDays(21), 0.0, subscription);
-            loanRepository.save(loan);
+            if (!loanRepository.existsLoanByBookAndSubscription(book, subscription)) {
+                Loan loan = new Loan(book, LocalDate.now(), LocalDate.now().plusDays(21), 0.0, subscription);
+                loanRepository.save(loan);
+            }
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("No free books of '%s' left",
                                                                                     foundBook.get().getTitle()));
         }
-        model.put("books", bookRepository.findAll());
+        model.addAttribute("books", bookRepository.findAll());
         return "catalogue";
     }
 }
