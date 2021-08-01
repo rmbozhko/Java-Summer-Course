@@ -38,4 +38,6 @@ public class Loan {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private Subscription subscription;
+
+    public static Double   DAILY_PENALTY_HRV = 30.0;
 }

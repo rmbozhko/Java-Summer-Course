@@ -2,6 +2,7 @@
 <#import "parts/authorization.ftl" as auth>
 
 <@common.page title = "Catalogue">
+    <a href="/user/profile/info">To user profile info</a>
     <div>
         <@auth.logout />
     </div>
