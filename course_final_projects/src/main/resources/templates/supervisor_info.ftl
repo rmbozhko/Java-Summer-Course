@@ -1,31 +1,14 @@
 <#import "parts/common.ftl" as common>
+<#import "parts/profile.ftl" as profile>
 <@common.page title="Profile | Info">
+    <@profile.user_info>
     <table>
         <thead>
         <tr>
-            <th colspan="2">User info</th>
+            <th>Loans' data</th>
         </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>Username</td>
-            <td>${user.username}</td>
-        </tr>
-        <tr>
-            <td>Password</td>
-            <td>${user.password}</td>
-        </tr>
-        <tr>
-            <td>Account is active</td>
-            <td>${user.active?then('True', 'False')}</td>
-        </tr>
-        </tbody>
-    </table>
-    <table>
-        <thead>
         <tr>
             <th>Book data</th>
-            <th>Keep until</th>
             <th>Penalty</th>
         </tr>
         </thead>
@@ -33,7 +16,6 @@
             <#list loans as loan>
                 <tr>
                     <td><span>${loan.book.title} | ${loan.book.author} | ${loan.book.ISBN}</span></td>
-                    <td>${loan.endDate}</td>
                     <td>
                         <#if (loan.penalty > 0.0)>
                             ${loan.penalty}
@@ -45,5 +27,24 @@
             </#list>
         </tbody>
     </table>
-    <a href="/">Back to catalogue</a>
+    <table>
+        <thead>
+        <tr>
+            <th>Users' data</th>
+        </tr>
+        <tr>
+            <th>User data</th>
+            <th>Subscription token</th>
+        </tr>
+        </thead>
+        <tbody>
+        <#list users as user>
+            <tr>
+                <td><span>${user.username} | ${user.password} | ${user.active?then('True', 'False')}</span></td>
+                <td><span>${user.subscription.id}</span></td>
+            </tr>
+        </#list>
+        </tbody>
+    </table>
+    </@profile.user_info>
 </@common.page>

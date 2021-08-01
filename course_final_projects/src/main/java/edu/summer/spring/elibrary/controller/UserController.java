@@ -31,17 +31,35 @@ public class UserController {
     public String   getInfo(@AuthenticationPrincipal User user, Model model) {
         User userFromDb = userRepository.findByUsername(user.getUsername());
         model.addAttribute("user", userFromDb);
-//        Set<Role> roles = userFromDb.getRole();
-//        String info;
-//        if (roles.contains(Role.READER)) {
-//            info = getReaderInfo();
-//        } else if (roles.contains(Role.SUPERVISOR)) {
-//            info = getSupervisorInfo();
-//        } else if (roles.contains(Role.ADMIN)) {
-//            info = getAdminInfo();
-//        } else {
-//            info = getErrorInfo();
-//        }
+        Set<Role> roles = userFromDb.getRole();
+        String info;
+        if (roles.contains(Role.READER)) {
+            info = getReaderInfo(user, model);
+        } else if (roles.contains(Role.SUPERVISOR)) {
+            info = getSupervisorInfo(user, model);
+        } else if (roles.contains(Role.ADMIN)) {
+            info = getAdminInfo(user, model);
+        } else {
+            info = getErrorInfo(user, model);
+        }
+        return info;
+    }
+
+    private String getErrorInfo(User user, Model model) {
+        return "";
+    }
+
+    private String getAdminInfo(User user, Model model) {
+        return "admin_info";
+    }
+
+    private String getSupervisorInfo(User user, Model model) {
+        model.addAttribute("loans", loanRepository.findAll());
+        model.addAttribute("users", userRepository.findAllByRole(Role.READER));
+        return "supervisor_info";
+    }
+
+    private String getReaderInfo(User user, Model model) {
         List<Loan> loans = loanRepository.findAllBySubscription(user.getSubscription());
         for (Loan loan : loans) {
             long daysBetween = DAYS.between(LocalDate.now(), loan.getEndDate());
@@ -51,6 +69,6 @@ public class UserController {
             loanRepository.save(loan);
         }
         model.addAttribute("loans", loans);
-        return "profile_info";
+        return "reader_info";
     }
 }
