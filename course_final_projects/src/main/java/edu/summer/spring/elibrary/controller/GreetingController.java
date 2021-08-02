@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class GreetingController {
@@ -158,9 +159,10 @@ public class GreetingController {
         return "book";
     }
 
-    @GetMapping("/order/{id}")
-    public String   orderBook(@PathVariable String id,
-                              @AuthenticationPrincipal User user,
+    @PostMapping("/order/{id}")
+    public String   orderBook(@AuthenticationPrincipal User user,
+                              @PathVariable String id,
+                              @RequestParam(name = "loan_period") String loanPeriod,
                               Model model) {
         Optional<Book> foundBook = bookRepository.findById(Integer.valueOf(id));
         foundBook.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
@@ -173,13 +175,14 @@ public class GreetingController {
             if (subscriptionRepository.existsSubscriptionByUserId(user.getId())) {
                 subscription = subscriptionRepository.findOneByUserId(user.getId());
             } else {
-                subscription = new Subscription(user);
+                subscription = new Subscription(user, UUID.randomUUID().toString());
                 subscriptionRepository.save(subscription);
                 user.setSubscription(subscription);
                 userRepository.save(user);
             }
             if (!loanRepository.existsLoanByBookAndSubscription(book, subscription)) {
-                Loan loan = new Loan(book, LocalDate.now(), LocalDate.now().plusDays(21), 0.0, subscription);
+                Loan loan = new Loan(book, LocalDate.now(), LocalDate.now().plusDays(Integer.parseInt(loanPeriod)),
+                                0.0, subscription);
                 loanRepository.save(loan);
             }
         } else {

@@ -19,4 +19,7 @@ public class Subscription {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private User    user;
+
+    @NonNull
+    private String  token;
 }
