@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -29,18 +30,22 @@ public class UserController {
 
     @GetMapping("/profile/info")
     public String   getInfo(@AuthenticationPrincipal User user, Model model) {
-        User userFromDb = userRepository.findByUsername(user.getUsername());
+        User userFromDb = userRepository.findByUsername(user.getUsername()).get();
         model.addAttribute("user", userFromDb);
-        Set<Role> roles = userFromDb.getRole();
+        Role role = userFromDb.getRole();
         String info;
-        if (roles.contains(Role.READER)) {
-            info = getReaderInfo(user, model);
-        } else if (roles.contains(Role.SUPERVISOR)) {
-            info = getSupervisorInfo(user, model);
-        } else if (roles.contains(Role.ADMIN)) {
-            info = getAdminInfo(user, model);
-        } else {
-            info = getErrorInfo(user, model);
+        switch (role) {
+            case READER:
+                info = getReaderInfo(user, model);
+                break;
+            case LIBRARIAN:
+                info = getLibrarianInfo(user, model);
+                break;
+            case ADMIN:
+                info = getAdminInfo(user, model);
+                break;
+            default:
+                info = getErrorInfo(user, model);
         }
         return info;
     }
@@ -53,13 +58,14 @@ public class UserController {
         return "admin_info";
     }
 
-    private String getSupervisorInfo(User user, Model model) {
+    private String getLibrarianInfo(User user, Model model) {
         model.addAttribute("loans", loanRepository.findAll());
         model.addAttribute("users", userRepository.findAllByRole(Role.READER));
         return "supervisor_info";
     }
 
     private String getReaderInfo(User user, Model model) {
+        
         List<Loan> loans = loanRepository.findAllBySubscription(user.getSubscription());
         for (Loan loan : loans) {
             long daysBetween = DAYS.between(LocalDate.now(), loan.getEndDate());

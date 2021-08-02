@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name="Loans")
@@ -38,6 +37,11 @@ public class Loan {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private Subscription subscription;
+
+    @NonNull
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn
+    private Librarian    librarian;
 
     public static Double   DAILY_PENALTY_HRV = 30.0;
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/signup")
@@ -25,13 +26,13 @@ public class SignUpController {
 
     @PostMapping
     public String   addUser(User user, Model model) {
-        User userFromDb = userRepository.findByUsername(user.getUsername());
-        if (userFromDb != null) {
+        Optional<User> userFromDb = userRepository.findByUsername(user.getUsername());
+        if (userFromDb.isPresent()) {
             model.addAttribute("message", "User exists");
             return "signup";
         }
         user.setActive(true);
-        user.setRole(Collections.singleton(Role.READER));
+        user.setRole(Role.READER);
         userRepository.save(user);
         return "redirect:/login";
     }

@@ -5,20 +5,18 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Readers")
+@Table(name = "Librarians")
 @RequiredArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @Getter
 @Setter
-public class Reader extends User {
+public class Librarian extends User {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer           id;
+    private Integer     id;
 
-    @NonNull
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn
-    private Subscription    subscription;
+    @Column(columnDefinition = "boolean default false", nullable = false)
+    private Boolean     present;
 
     @NonNull
     @OneToOne(fetch = FetchType.EAGER)

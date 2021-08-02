@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor(force = true)
 @Getter
 @Setter
-@ToString(exclude = {"id", "role"})
+@ToString(exclude = {"id"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -23,26 +23,20 @@ public class User implements UserDetails {
     @NonNull
     @Column(nullable = false, unique = true)
     private String       username;
+
     @NonNull
     @Column(nullable = false)
     private String       password;
-    @NonNull
-    @Column(nullable = true)
+
+    @Column(columnDefinition = "boolean default true", nullable = true)
     private boolean      active;
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name="user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<Role> role;
-
-    @NonNull
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn
-    private Subscription    subscription;
+    @Enumerated(EnumType.ORDINAL)
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRole();
+        return Set.of(getRole());
     }
 
     @Override

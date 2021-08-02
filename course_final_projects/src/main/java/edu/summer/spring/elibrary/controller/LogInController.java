@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/login")
 public class LogInController {
@@ -22,7 +24,7 @@ public class LogInController {
 
     @PostMapping
     public String   loggingIn(User user, Model model) {
-        User userFromDb = userRepository.findByUsername(user.getUsername());
+        Optional<User> userFromDb = userRepository.findByUsername(user.getUsername());
         if (userFromDb == null) {
             model.addAttribute("message", "User doesn't exist");
             return "login";

@@ -2,6 +2,11 @@
 <#import "parts/profile.ftl" as profile>
 <@common.page title="Profile | Info">
     <@profile.user_info>
+    <form method="post" action="update/presence">
+        <input type="radio" name="present" value="False" checked>Absent
+        <input type="radio" name="present" value="True">On Duty
+        <button type="submit">Update presence</button>
+    </form>
     <table>
         <thead>
         <tr>

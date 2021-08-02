@@ -17,13 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
 @Controller
-public class GreetingController {
+public class CatalogueController {
 
     @Autowired
     private BookRepository bookRepository;
@@ -41,67 +39,6 @@ public class GreetingController {
     public String   index(Model model) {
         Iterable<Book> books = bookRepository.findAll();
         model.addAttribute("books", books);
-        return "catalogue";
-    }
-
-    @PostMapping("/book/add")
-    public String   addBook(@AuthenticationPrincipal User user,
-                            @RequestParam String title,
-                            @RequestParam String author,
-                            @RequestParam String publisher,
-                            @RequestParam String publishingDate,
-                            @RequestParam String ISBN,
-                            @RequestParam Integer quantity,
-                            Model model) {
-        bookRepository.save(new Book(title, author, publisher,
-                                    LocalDate.parse(publishingDate,
-                                            DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)),
-                                    ISBN, quantity));
-        Iterable<Book> books = bookRepository.findAll();
-        model.addAttribute("books", books);
-
-        return "catalogue";
-    }
-
-    // Problems with transactions
-    @PostMapping("/book/delete")
-    public String   deleteBook(@AuthenticationPrincipal User user,
-                            @RequestParam String ISBN,
-                            Model model) {
-        Optional<Book> bookToDelete = bookRepository.findBookByISBN(ISBN);
-        if (bookToDelete.isPresent()) {
-            loanRepository.deleteLoansByBook(bookToDelete.get()); // every loan with book to delete will be deleted
-            bookRepository.deleteBookByISBN(ISBN); // return value should be 1
-        }
-        Iterable<Book> books = bookRepository.findAll();
-        model.addAttribute("books", books);
-
-        return "catalogue";
-    }
-
-    @PostMapping("/book/update")
-    public String   updateBook(@RequestParam(required = false) String title,
-                            @RequestParam(required = false) String author,
-                            @RequestParam(required = false) String publisher,
-                            @RequestParam(required = false) String publishingDate,
-                            @RequestParam(required = true) String ISBN,
-                            @RequestParam(required = false) Integer quantity,
-                            Model model) {
-        Optional<Book> bookToUpdate = bookRepository.findBookByISBN(ISBN);
-        if (bookToUpdate.isPresent()) {
-            Book book = bookToUpdate.get();
-            if (!title.isEmpty()) book.setTitle(title);
-            if (!author.isEmpty()) book.setAuthor(author);
-            if (!publisher.isEmpty()) book.setPublisher(publisher);
-            if (!publishingDate.isEmpty()) book.setPublishingDate(LocalDate.parse(publishingDate,
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)));
-            if (!ISBN.isEmpty()) book.setISBN(ISBN);
-            if (quantity != null && quantity > 0) book.setQuantity(quantity);
-            bookRepository.save(book);
-        }
-        Iterable<Book> books = bookRepository.findAll();
-        model.addAttribute("books", books);
-
         return "catalogue";
     }
 
@@ -145,17 +82,19 @@ public class GreetingController {
                             Model model) {
         Optional<Book> foundBook = bookRepository.findById(Integer.valueOf(id));
 
-        foundBook.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
-
-        Book book = foundBook.get();
-        model.addAttribute("id", book.getId());
-        model.addAttribute("title", book.getTitle());
-        model.addAttribute("author", book.getAuthor());
-        model.addAttribute("publisher", book.getPublisher());
-        model.addAttribute("publishingDate", book.getPublishingDate().toString());
-        model.addAttribute("ISBN", book.getISBN());
-        model.addAttribute("quantity", book.getQuantity());
-
+        foundBook.ifPresentOrElse(
+                book -> {
+                    model.addAttribute("id", book.getId());
+                    model.addAttribute("title", book.getTitle());
+                    model.addAttribute("author", book.getAuthor());
+                    model.addAttribute("publisher", book.getPublisher());
+                    model.addAttribute("publishingDate", book.getPublishingDate().toString());
+                    model.addAttribute("ISBN", book.getISBN());
+                    model.addAttribute("quantity", book.getQuantity());
+                },
+                () -> {
+                    model.addAttribute("message", "No book with specified id was found.");
+                });
         return "book";
     }
 
