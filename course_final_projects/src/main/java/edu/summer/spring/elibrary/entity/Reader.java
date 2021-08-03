@@ -10,7 +10,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Reader extends User {
+@ToString(exclude = {"id"})
+public class Reader {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer           id;
@@ -18,10 +19,10 @@ public class Reader extends User {
     @NonNull
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn
-    private Subscription    subscription;
+    private User    user;
 
     @NonNull
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn
-    private User    user;
+    private Subscription    subscription;
 }

@@ -10,11 +10,13 @@ import javax.persistence.*;
 @NoArgsConstructor(force = true)
 @Getter
 @Setter
-public class Librarian extends User {
+@ToString(exclude = {"id"})
+public class Librarian {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer     id;
 
+    @NonNull
     @Column(columnDefinition = "boolean default false", nullable = false)
     private Boolean     present;
 

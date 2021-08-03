@@ -13,15 +13,16 @@ import java.time.LocalDate;
 @Setter
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
+@ToString(exclude = {"id"})
 public class Book {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer           id;
 
-    @NonNull private String      title;
-    @NonNull private String      author;
-    @NonNull private String      publisher;
-    @NonNull private LocalDate   publishingDate;
-    @NonNull private String      ISBN;
-    @NonNull private Integer  quantity;
+    @NonNull private String     title;
+    @NonNull private String     author;
+    @NonNull private String     publisher;
+    @NonNull private LocalDate  publishingDate;
+    @NonNull private String     ISBN;
+    @NonNull private Integer    quantity;
 }

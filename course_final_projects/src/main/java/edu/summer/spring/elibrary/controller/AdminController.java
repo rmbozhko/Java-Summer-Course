@@ -1,11 +1,15 @@
 package edu.summer.spring.elibrary.controller;
 
 import edu.summer.spring.elibrary.entity.Book;
+import edu.summer.spring.elibrary.entity.Librarian;
+import edu.summer.spring.elibrary.entity.Role;
 import edu.summer.spring.elibrary.entity.User;
 import edu.summer.spring.elibrary.repos.BookRepository;
+import edu.summer.spring.elibrary.repos.LibrarianRepository;
 import edu.summer.spring.elibrary.repos.LoanRepository;
 import edu.summer.spring.elibrary.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,12 +34,27 @@ public class AdminController {
     @Autowired
     private LoanRepository loanRepository;
 
+    @Autowired
+    private LibrarianRepository librarianRepository;
+
     @PostMapping("add/librarian")
-    public String   addLibrarian(@RequestParam String username,
+    public String   addLibrarian(@AuthenticationPrincipal User user,
+                                 @RequestParam String username,
                                  @RequestParam String password,
                                  Model model) {
-        // TODO Implement creating new librarian
-        model.addAttribute("message", "Librarian was added.");
+        model.addAttribute("user", user);
+        Optional<User> userFromDb = userRepository.findByUsername(username);
+        userFromDb.ifPresentOrElse(
+                usr -> model.addAttribute("message", "Not unique username"),
+                () -> {
+                    User librarianUserEntity = new User(username, password);
+                    librarianUserEntity.setActive(true);
+                    librarianUserEntity.setRole(Role.LIBRARIAN);
+                    userRepository.save(librarianUserEntity);
+                    Librarian librarian = new Librarian(true, user);
+                    librarianRepository.save(librarian);
+                    model.addAttribute("message", "Librarian was added.");
+                });
         return "admin_info";
     }
 

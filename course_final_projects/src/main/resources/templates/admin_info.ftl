@@ -3,17 +3,17 @@
 <@common.page title="Profile | Info">
     <@profile.user_info>
         <div>
-            Add supervisor
-            <form method="post" action="add/supervisor">
+            Add a librarian
+            <form method="post" action="/admin/add/librarian">
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
                 <input type="text" name="username" placeholder="username" required/>
                 <input type="text" name="password" placeholder="password" required/>
-                <button type="submit">Add the supervisor</button>
+                <button type="submit">Add the librarian</button>
             </form>
         </div>
         <div>
-            Delete supervisor
-            <form method="post" action="delete/librarian">
+            Delete a librarian
+            <form method="post" action="/admin/delete/librarian">
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
                 <input type="text" name="username" placeholder="username" required/>
                 <button type="submit">Delete the librarian</button>
@@ -21,7 +21,7 @@
         </div>
         <div>
             Change status of user account
-            <form method="post" action="de_activate/user">
+            <form method="post" action="/admin/de_activate/user">
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
                 <input type="text" name="username" placeholder="username" required/>
                 <input type="radio" name="active" value="True" checked>Active
@@ -31,7 +31,7 @@
         </div>
         <div>
             Add book
-            <form method="post" action="add/book">
+            <form method="post" action="/admin/add/book">
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
                 <input type="text" name="title" placeholder="Title"/>
                 <input type="text" name="author" placeholder="Author"/>
@@ -44,7 +44,7 @@
         </div>
         <div>
             Delete book
-            <form method="post" action="delete/book">
+            <form method="post" action="/admin/delete/book">
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
                 <input type="text" name="ISBN" placeholder="ISBN" />
                 <button type="submit">Delete the book</button>
@@ -52,7 +52,7 @@
         </div>
         <div>
             Update book
-            <form method="post" action="update/book">
+            <form method="post" action="/admin/update/book">
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
                 <input type="text" name="title" placeholder="Title"/>
                 <input type="text" name="author" placeholder="Author"/>

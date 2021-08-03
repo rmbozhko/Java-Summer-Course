@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(force = true)
 @Getter
 @Setter
+@ToString(exclude = {"id"})
 public class Loan {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

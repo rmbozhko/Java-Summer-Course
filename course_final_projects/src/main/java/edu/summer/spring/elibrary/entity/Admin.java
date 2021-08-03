@@ -1,4 +1,4 @@
 package edu.summer.spring.elibrary.entity;
 
-public class Admin extends User {
+public class Admin {
 }

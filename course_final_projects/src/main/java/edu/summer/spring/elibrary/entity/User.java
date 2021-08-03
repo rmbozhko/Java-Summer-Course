@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @Entity
-@Table(name = "usr")
+@Table(name = "Users")
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
 @Getter
@@ -18,21 +18,21 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer           id;
+    private Integer     id;
 
     @NonNull
     @Column(nullable = false, unique = true)
-    private String       username;
+    private String      username;
 
     @NonNull
     @Column(nullable = false)
-    private String       password;
+    private String      password;
 
     @Column(columnDefinition = "boolean default true", nullable = true)
     private boolean      active;
 
     @Enumerated(EnumType.ORDINAL)
-    private Role role;
+    private Role        role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

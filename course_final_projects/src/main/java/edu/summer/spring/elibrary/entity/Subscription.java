@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Setter
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
+@ToString(exclude = {"id"})
 public class Subscription {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

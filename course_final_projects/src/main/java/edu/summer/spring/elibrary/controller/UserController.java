@@ -1,9 +1,11 @@
 package edu.summer.spring.elibrary.controller;
 
 import edu.summer.spring.elibrary.entity.Loan;
+import edu.summer.spring.elibrary.entity.Reader;
 import edu.summer.spring.elibrary.entity.Role;
 import edu.summer.spring.elibrary.entity.User;
 import edu.summer.spring.elibrary.repos.LoanRepository;
+import edu.summer.spring.elibrary.repos.ReaderRepository;
 import edu.summer.spring.elibrary.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +29,9 @@ public class UserController {
 
     @Autowired
     private LoanRepository loanRepository;
+
+    @Autowired
+    private ReaderRepository readerRepository;
 
     @GetMapping("/profile/info")
     public String   getInfo(@AuthenticationPrincipal User user, Model model) {
@@ -61,12 +66,13 @@ public class UserController {
     private String getLibrarianInfo(User user, Model model) {
         model.addAttribute("loans", loanRepository.findAll());
         model.addAttribute("users", userRepository.findAllByRole(Role.READER));
+
         return "supervisor_info";
     }
 
     private String getReaderInfo(User user, Model model) {
-        
-        List<Loan> loans = loanRepository.findAllBySubscription(user.getSubscription());
+        Optional<Reader> reader = readerRepository.findByUser(user);
+        List<Loan> loans = loanRepository.findAllBySubscription(reader.get().getSubscription());
         for (Loan loan : loans) {
             long daysBetween = DAYS.between(LocalDate.now(), loan.getEndDate());
             if (daysBetween < 0) {
@@ -75,6 +81,7 @@ public class UserController {
             loanRepository.save(loan);
         }
         model.addAttribute("loans", loans);
+
         return "reader_info";
     }
 }

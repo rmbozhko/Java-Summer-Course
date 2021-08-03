@@ -1,19 +1,16 @@
 package edu.summer.spring.elibrary.controller;
 
-import edu.summer.spring.elibrary.entity.Book;
-import edu.summer.spring.elibrary.entity.Loan;
-import edu.summer.spring.elibrary.entity.Subscription;
-import edu.summer.spring.elibrary.entity.User;
-import edu.summer.spring.elibrary.repos.BookRepository;
-import edu.summer.spring.elibrary.repos.LoanRepository;
-import edu.summer.spring.elibrary.repos.SubscriptionRepository;
-import edu.summer.spring.elibrary.repos.UserRepository;
+import edu.summer.spring.elibrary.entity.*;
+import edu.summer.spring.elibrary.repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -34,6 +31,12 @@ public class CatalogueController {
 
     @Autowired
     private UserRepository  userRepository;
+
+    @Autowired
+    private ReaderRepository readerRepository;
+
+    @Autowired
+    private LibrarianRepository librarianRepository;
 
     @GetMapping
     public String   index(Model model) {
@@ -98,37 +101,38 @@ public class CatalogueController {
         return "book";
     }
 
+    // only for user-readers
     @PostMapping("/order/{id}")
-    public String   orderBook(@AuthenticationPrincipal User user,
-                              @PathVariable String id,
-                              @RequestParam(name = "loan_period") String loanPeriod,
-                              Model model) {
+    public String   orderBookById(@AuthenticationPrincipal User user,
+                                  @PathVariable String id,
+                                  @RequestParam(name = "loan_period") String loanPeriod,
+                                  Model model) {
         Optional<Book> foundBook = bookRepository.findById(Integer.valueOf(id));
         foundBook.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
-        Book book;
-        if (foundBook.get().getQuantity() > 0) {
-            book = foundBook.get();
-            book.setQuantity(book.getQuantity() - 1);
-            bookRepository.save(book);
-            Subscription subscription;
-            if (subscriptionRepository.existsSubscriptionByUserId(user.getId())) {
-                subscription = subscriptionRepository.findOneByUserId(user.getId());
-            } else {
-                subscription = new Subscription(user, UUID.randomUUID().toString());
-                subscriptionRepository.save(subscription);
-                user.setSubscription(subscription);
-                userRepository.save(user);
-            }
-            if (!loanRepository.existsLoanByBookAndSubscription(book, subscription)) {
-                Loan loan = new Loan(book, LocalDate.now(), LocalDate.now().plusDays(Integer.parseInt(loanPeriod)),
-                                0.0, subscription);
-                loanRepository.save(loan);
-            }
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("No free books of '%s' left",
-                                                                                    foundBook.get().getTitle()));
-        }
+        foundBook.ifPresentOrElse(
+                book -> orderBook(book, user, Integer.parseInt(loanPeriod), model),
+                () -> model.addAttribute("message", "No book found with specified id")
+        );
         model.addAttribute("books", bookRepository.findAll());
         return "catalogue";
+
+    }
+
+    private void orderBook(Book book, User user, Integer loanPeriod, Model model) {
+        if (book.getQuantity() > 0) {
+            Optional<Subscription> optionalSubscription = subscriptionRepository.findOneByUserId(user.getId());
+            Subscription subscription = optionalSubscription.get();
+            if (!loanRepository.existsLoanByBookAndSubscription(book, subscription)) {
+                book.setQuantity(book.getQuantity() - 1);
+                bookRepository.save(book);
+                Loan loan = new Loan(book, LocalDate.now(), LocalDate.now().plusDays(loanPeriod),
+                        0.0, subscription, librarianRepository.findByPresentIsTrue().get());
+                loanRepository.save(loan);
+            } else {
+                model.addAttribute("message", "You have already lent this book");
+            }
+        } else {
+            model.addAttribute("message", String.format("No free books of '%s' left", book.getTitle()));
+        }
     }
 }
