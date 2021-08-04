@@ -1,9 +1,7 @@
 package edu.summer.spring.elibrary.controller;
 
-import edu.summer.spring.elibrary.entity.Loan;
-import edu.summer.spring.elibrary.entity.Reader;
-import edu.summer.spring.elibrary.entity.Role;
-import edu.summer.spring.elibrary.entity.User;
+import edu.summer.spring.elibrary.entity.*;
+import edu.summer.spring.elibrary.repos.LibrarianRepository;
 import edu.summer.spring.elibrary.repos.LoanRepository;
 import edu.summer.spring.elibrary.repos.ReaderRepository;
 import edu.summer.spring.elibrary.repos.UserRepository;
@@ -15,9 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -33,6 +32,9 @@ public class UserController {
     @Autowired
     private ReaderRepository readerRepository;
 
+    @Autowired
+    private LibrarianRepository librarianRepository;
+
     @GetMapping("/profile/info")
     public String   getInfo(@AuthenticationPrincipal User user, Model model) {
         User userFromDb = userRepository.findByUsername(user.getUsername()).get();
@@ -44,30 +46,34 @@ public class UserController {
                 info = getReaderInfo(user, model);
                 break;
             case LIBRARIAN:
-                info = getLibrarianInfo(user, model);
+                info = getLibrarianInfo(librarianRepository.findByUser(user).get(), model);
                 break;
             case ADMIN:
-                info = getAdminInfo(user, model);
+                info = getAdminInfo(model);
                 break;
             default:
-                info = getErrorInfo(user, model);
+                info = getErrorInfo(model);
         }
         return info;
     }
 
-    private String getErrorInfo(User user, Model model) {
+    private String getErrorInfo(Model model) {
         return "";
     }
 
-    private String getAdminInfo(User user, Model model) {
+    private String getAdminInfo(Model model) {
         return "admin_info";
     }
 
-    private String getLibrarianInfo(User user, Model model) {
-        model.addAttribute("loans", loanRepository.findAll());
-        model.addAttribute("users", userRepository.findAllByRole(Role.READER));
+    private String getLibrarianInfo(Librarian librarian, Model model) {
+        model.addAttribute("loans", loanRepository.findAllByLibrarian(librarian));
+        Map<String, User> readersData = new HashMap<>();
+        for (Reader reader : readerRepository.findAll()) {
+            readersData.put(reader.getSubscription().getToken(), reader.getUser());
+        }
+        model.addAttribute("readers", readersData);
 
-        return "supervisor_info";
+        return "librarian_info";
     }
 
     private String getReaderInfo(User user, Model model) {

@@ -6,6 +6,9 @@
     <title>${title}</title>
 </head>
 <body>
+<#if message??>
+    <h3>${message}</h3>
+</#if>
 <#nested>
 </body>
 </html>

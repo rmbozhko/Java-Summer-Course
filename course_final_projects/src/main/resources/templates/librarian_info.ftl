@@ -2,7 +2,8 @@
 <#import "parts/profile.ftl" as profile>
 <@common.page title="Profile | Info">
     <@profile.user_info>
-    <form method="post" action="update/presence">
+    <form method="post" action="/librarian/update/presence">
+        <input type="hidden" name="_csrf" value="${_csrf.token}" />
         <input type="radio" name="present" value="False" checked>Absent
         <input type="radio" name="present" value="True">On Duty
         <button type="submit">Update presence</button>
@@ -35,18 +36,18 @@
     <table>
         <thead>
         <tr>
-            <th>Users' data</th>
+            <th>Readers' data</th>
         </tr>
         <tr>
-            <th>User data</th>
+            <th>Reader data</th>
             <th>Subscription token</th>
         </tr>
         </thead>
         <tbody>
-        <#list users as user>
+        <#list readers?keys as key>
             <tr>
-                <td><span>${user.username} | ${user.password} | ${user.active?then('True', 'False')}</span></td>
-                <td><span>${user.subscription.id}</span></td>
+                <td><span>${readers[key].username} | ${readers[key].password} | ${readers[key].active?then('True', 'False')}</span></td>
+                <td><span>${key}</span></td>
             </tr>
         </#list>
         </tbody>

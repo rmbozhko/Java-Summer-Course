@@ -128,6 +128,7 @@ public class CatalogueController {
                 Loan loan = new Loan(book, LocalDate.now(), LocalDate.now().plusDays(loanPeriod),
                         0.0, subscription, librarianRepository.findByPresentIsTrue().get());
                 loanRepository.save(loan);
+                model.addAttribute("message", "You have successfully lent the book");
             } else {
                 model.addAttribute("message", "You have already lent this book");
             }
