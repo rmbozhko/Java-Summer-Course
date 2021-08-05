@@ -8,6 +8,9 @@ import edu.summer.spring.elibrary.repos.ReaderRepository;
 import edu.summer.spring.elibrary.repos.SubscriptionRepository;
 import edu.summer.spring.elibrary.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +32,10 @@ public class SignUpController {
     @Autowired
     private SubscriptionRepository subscriptionRepository;
 
+    @Autowired
+    @Qualifier("bcryptPasswordEncoder")
+    private PasswordEncoder encoder;
+
     @GetMapping
     public String   signUp() {
         return "signup";
@@ -41,6 +48,7 @@ public class SignUpController {
             model.addAttribute("message", "User exists");
             return "signup";
         }
+        user.setPassword(encoder.encode(user.getPassword()));
         user.setActive(true);
         user.setRole(Role.READER);
         userRepository.save(user);
