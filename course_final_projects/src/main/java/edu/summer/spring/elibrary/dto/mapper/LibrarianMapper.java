@@ -8,8 +8,9 @@ import org.springframework.stereotype.Component;
 public class LibrarianMapper {
     public static LibrarianDto toLibrarianDto(Librarian librarian) {
         return new LibrarianDto().setUsername(librarian.getUser().getUsername())
-                .setFirstName(librarian.getUser().getFirstName())
-                .setLastName(librarian.getUser().getLastName())
-                .setEmail(librarian.getUser().getEmail());
+                                .setPassword(librarian.getUser().getPassword())
+                                .setFirstName(librarian.getUser().getFirstName())
+                                .setLastName(librarian.getUser().getLastName())
+                                .setEmail(librarian.getUser().getEmail());
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class ReaderMapper {
     public static ReaderDto toReaderDto(Reader reader) {
         return new ReaderDto().setUsername(reader.getUser().getUsername())
+                            .setPassword(reader.getUser().getPassword())
                             .setFirstName(reader.getUser().getFirstName())
                             .setLastName(reader.getUser().getLastName())
                             .setEmail(reader.getUser().getEmail());

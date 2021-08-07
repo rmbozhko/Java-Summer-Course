@@ -1,17 +1,19 @@
 package edu.summer.spring.elibrary.service;
 
-import edu.summer.spring.elibrary.exception.FoundNoInstanceException;
-import edu.summer.spring.elibrary.exception.NotUniqueDataException;
 import edu.summer.spring.elibrary.dto.mapper.LibrarianMapper;
+import edu.summer.spring.elibrary.dto.mapper.ReaderMapper;
 import edu.summer.spring.elibrary.dto.model.BookDto;
 import edu.summer.spring.elibrary.dto.model.LibrarianDto;
 import edu.summer.spring.elibrary.dto.model.ReaderDto;
+import edu.summer.spring.elibrary.exception.FoundNoInstanceException;
+import edu.summer.spring.elibrary.exception.NotUniqueDataException;
 import edu.summer.spring.elibrary.model.Librarian;
 import edu.summer.spring.elibrary.model.Loan;
 import edu.summer.spring.elibrary.model.Role;
 import edu.summer.spring.elibrary.model.User;
 import edu.summer.spring.elibrary.repository.LibrarianRepository;
 import edu.summer.spring.elibrary.repository.LoanRepository;
+import edu.summer.spring.elibrary.repository.ReaderRepository;
 import edu.summer.spring.elibrary.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,6 +37,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private LoanRepository loanRepository;
+
+    @Autowired
+    private ReaderRepository readerRepository;
 
     @Override
     public LibrarianDto addLibrarian(LibrarianDto librarianDto) throws NotUniqueDataException {
@@ -74,8 +79,13 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String deActiveReader(ReaderDto readerDto) {
-        return null;
+    public ReaderDto deActiveReader(ReaderDto readerDto, Boolean active) throws FoundNoInstanceException {
+        User userToChangeStatus = userRepository.findByUsername(readerDto.getUsername())
+                                                            .orElseThrow(
+                                                                    () -> new FoundNoInstanceException("No user with specified username was found."));
+        userToChangeStatus.setActive(active);
+        userRepository.save(userToChangeStatus);
+        return ReaderMapper.toReaderDto(readerRepository.findByUser(userToChangeStatus).get());
     }
 
     @Override

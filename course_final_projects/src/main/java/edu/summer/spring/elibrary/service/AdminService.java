@@ -10,7 +10,7 @@ public interface AdminService {
     LibrarianDto addLibrarian(LibrarianDto librarianDto) throws NotUniqueDataException;
     LibrarianDto deleteLibrarian(LibrarianDto librarianDto) throws FoundNoInstanceException;
 
-    String      deActiveReader(ReaderDto readerDto);
+    ReaderDto      deActiveReader(ReaderDto readerDto, Boolean active) throws FoundNoInstanceException;
 
     String      addBook(BookDto bookDto);
     String      deleteBook(BookDto bookDto);

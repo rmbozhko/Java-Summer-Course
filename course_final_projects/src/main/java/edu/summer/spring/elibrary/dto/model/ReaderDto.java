@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class ReaderDto {
     private String      username;
+    private String      password;
     private String      firstName;
     private String      lastName;
     private String      email;

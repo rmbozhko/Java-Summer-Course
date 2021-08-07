@@ -1,5 +1,6 @@
 package edu.summer.spring.elibrary.controller;
 
+import edu.summer.spring.elibrary.dto.model.ReaderDto;
 import edu.summer.spring.elibrary.exception.FoundNoInstanceException;
 import edu.summer.spring.elibrary.exception.NotUniqueDataException;
 import edu.summer.spring.elibrary.controller.request.UserSignupRequest;
@@ -11,6 +12,7 @@ import edu.summer.spring.elibrary.repository.LoanRepository;
 import edu.summer.spring.elibrary.repository.UserRepository;
 import edu.summer.spring.elibrary.service.AdminServiceImpl;
 import edu.summer.spring.elibrary.service.LibrarianService;
+import edu.summer.spring.elibrary.service.ReaderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -44,6 +47,9 @@ public class AdminController {
 
     @Autowired
     private LibrarianService librarianService;
+
+    @Autowired
+    private ReaderService readerService;
 
     @PostMapping(path = "/add/librarian", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
     public String   addLibrarian(@AuthenticationPrincipal User user,
@@ -86,20 +92,16 @@ public class AdminController {
     @PostMapping("de_activate/user")
     public String   deActivateUser(@AuthenticationPrincipal User user,
                                    @RequestParam String username,
-                                   @RequestParam String active,
+                                   @Pattern(regexp = "[(True|False)]") @RequestParam String active,
                                    Model model) {
+        // active: True | False - Hibernate Validator
         model.addAttribute("user", user);
-        if (active.equals("True") || active.equals("False")) {
-            Optional<User> userToChangeStatus = userRepository.findByUsername(username);
-            userToChangeStatus.ifPresentOrElse(
-                    usr -> {
-                        usr.setActive(Boolean.parseBoolean(active));
-                        userRepository.save(usr);
-                        model.addAttribute("message", "User's status was changed");
-                    },
-                    () -> model.addAttribute("message", "No user with specified username was found."));
-        } else {
-            model.addAttribute("message", "Incorrect status");
+        try {
+            ReaderDto readerDto = readerService.findByUsername(username);
+            adminService.deActiveReader(readerDto, Boolean.parseBoolean(active));
+            model.addAttribute("message", "User's status was changed");
+        } catch (FoundNoInstanceException e) {
+            model.addAttribute("message", e.getMessage());
         }
         return "admin_info";
     }
