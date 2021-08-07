@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.ISBN;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
 
 @Getter
@@ -16,6 +18,9 @@ public class BookFormCommand {
     private String author;
     private String publisher;
     private String publishingDate;
+
+    @NotBlank
+    @org.hibernate.validator.constraints.ISBN
     private String ISBN;
 
     @PositiveOrZero

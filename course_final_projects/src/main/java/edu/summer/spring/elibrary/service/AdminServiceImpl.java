@@ -116,7 +116,19 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String updateBook(BookDto bookDto) {
-        return null;
+    public BookDto updateBook(BookDto bookDto) throws FoundNoInstanceException {
+        Book book = bookRepository.findBookByISBN(bookDto.getISBN())
+                                .orElseThrow(() -> new FoundNoInstanceException("No book with specified ISBN was found."));
+
+        if (bookDto.getTitle() != null && !bookDto.getTitle().isEmpty()) book.setTitle(bookDto.getTitle());
+        if (bookDto.getAuthor() != null && !bookDto.getAuthor().isEmpty()) book.setAuthor(bookDto.getAuthor());
+        if (bookDto.getPublisher() != null && !bookDto.getPublisher().isEmpty()) book.setPublisher(bookDto.getPublisher());
+        if (bookDto.getPublishingDate() != null && !bookDto.getPublishingDate().isEmpty()) {
+            book.setPublishingDate(LocalDate.parse(bookDto.getPublishingDate(),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)));
+        }
+        if (bookDto.getQuantity() != null && bookDto.getQuantity() > 0) book.setQuantity(bookDto.getQuantity());
+        bookRepository.save(book);
+        return BookMapper.toBookDto(book);
     }
 }

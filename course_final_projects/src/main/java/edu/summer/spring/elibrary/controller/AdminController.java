@@ -168,36 +168,26 @@ public class AdminController {
 
     @PostMapping("update/book")
     public String   updateBook(@AuthenticationPrincipal User user,
-                               @RequestParam(required = false) String title,
-                               @RequestParam(required = false) String author,
-                               @RequestParam(required = false) String publisher,
-                               @RequestParam(required = false) String publishingDate,
-                               @RequestParam(required = true) String ISBN,
-                               @RequestParam(required = false) Integer quantity,
+                               BookFormCommand book,
                                Model model) {
         model.addAttribute("user", user);
-        if (ISBN != null && !ISBN.isEmpty()) {
-            Optional<Book> bookToUpdate = bookRepository.findBookByISBN(ISBN);
-            bookToUpdate.ifPresentOrElse(
-                    book -> {
-                        if (title != null && !title.isEmpty()) book.setTitle(title);
-                        if (author != null && !author.isEmpty()) book.setAuthor(author);
-                        if (publisher != null && !publisher.isEmpty()) book.setPublisher(publisher);
-                        if (publishingDate != null && !publishingDate.isEmpty()) {
-                            book.setPublishingDate(LocalDate.parse(publishingDate,
-                                    DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)));
-                        }
-                        book.setISBN(ISBN);
-                        if (quantity != null && quantity > 0) book.setQuantity(quantity);
-                        bookRepository.save(book);
-                        model.addAttribute("message", "Book was successfully updated.");
-                    },
-                    () -> model.addAttribute("message", "No book with specified ISBN was found."));
-        } else {
-            model.addAttribute("message", "Incorrect ISBN.");
+        try {
+            BookDto bookDto = getBookFromUpdateForm(book);
+            adminService.updateBook(bookDto);
+            model.addAttribute("message", "Book was successfully updated.");
+        } catch (FoundNoInstanceException e) {
+            model.addAttribute("message", e.getMessage());
         }
-
         return "admin_info";
+    }
+
+    private BookDto getBookFromUpdateForm(BookFormCommand bookFormCommand) {
+        return new BookDto().setTitle(bookFormCommand.getTitle())
+                            .setAuthor(bookFormCommand.getAuthor())
+                            .setPublisher(bookFormCommand.getPublisher())
+                            .setPublishingDate(bookFormCommand.getPublishingDate())
+                            .setISBN(bookFormCommand.getISBN())
+                            .setQuantity(bookFormCommand.getQuantity());
     }
 
 }

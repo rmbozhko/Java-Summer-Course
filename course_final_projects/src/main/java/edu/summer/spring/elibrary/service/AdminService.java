@@ -14,5 +14,5 @@ public interface AdminService {
 
     BookDto         addBook(BookDto bookDto) throws NotUniqueDataException;
     BookDto deleteBook(BookDto bookDto) throws FoundNoInstanceException;
-    String          updateBook(BookDto bookDto);
+    BookDto updateBook(BookDto bookDto) throws FoundNoInstanceException;
 }
