@@ -7,12 +7,12 @@ import edu.summer.spring.elibrary.dto.model.LibrarianDto;
 import edu.summer.spring.elibrary.dto.model.ReaderDto;
 
 public interface AdminService {
-    LibrarianDto addLibrarian(LibrarianDto librarianDto) throws NotUniqueDataException;
-    LibrarianDto deleteLibrarian(LibrarianDto librarianDto) throws FoundNoInstanceException;
+    LibrarianDto    addLibrarian(LibrarianDto librarianDto) throws NotUniqueDataException;
+    LibrarianDto    deleteLibrarian(LibrarianDto librarianDto) throws FoundNoInstanceException;
 
-    ReaderDto      deActiveReader(ReaderDto readerDto, Boolean active) throws FoundNoInstanceException;
+    ReaderDto       deActiveReader(ReaderDto readerDto, Boolean active) throws FoundNoInstanceException;
 
-    String      addBook(BookDto bookDto);
-    String      deleteBook(BookDto bookDto);
-    String      updateBook(BookDto bookDto);
+    BookDto         addBook(BookDto bookDto) throws NotUniqueDataException;
+    BookDto deleteBook(BookDto bookDto) throws FoundNoInstanceException;
+    String          updateBook(BookDto bookDto);
 }

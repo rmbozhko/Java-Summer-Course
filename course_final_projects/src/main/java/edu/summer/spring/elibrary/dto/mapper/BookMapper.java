@@ -10,7 +10,8 @@ public class BookMapper {
         return new BookDto().setTitle(book.getTitle())
                             .setAuthor(book.getAuthor())
                             .setPublisher(book.getPublisher())
-                            .setPublishingDate(book.getPublishingDate())
-                            .setISBN(book.getISBN());
+                            .setPublishingDate(book.getPublishingDate().toString())
+                            .setISBN(book.getISBN())
+                            .setQuantity(book.getQuantity());
     }
 }

@@ -1,5 +1,6 @@
 package edu.summer.spring.elibrary.service;
 
+import edu.summer.spring.elibrary.dto.mapper.BookMapper;
 import edu.summer.spring.elibrary.dto.mapper.LibrarianMapper;
 import edu.summer.spring.elibrary.dto.mapper.ReaderMapper;
 import edu.summer.spring.elibrary.dto.model.BookDto;
@@ -7,20 +8,17 @@ import edu.summer.spring.elibrary.dto.model.LibrarianDto;
 import edu.summer.spring.elibrary.dto.model.ReaderDto;
 import edu.summer.spring.elibrary.exception.FoundNoInstanceException;
 import edu.summer.spring.elibrary.exception.NotUniqueDataException;
-import edu.summer.spring.elibrary.model.Librarian;
-import edu.summer.spring.elibrary.model.Loan;
-import edu.summer.spring.elibrary.model.Role;
-import edu.summer.spring.elibrary.model.User;
-import edu.summer.spring.elibrary.repository.LibrarianRepository;
-import edu.summer.spring.elibrary.repository.LoanRepository;
-import edu.summer.spring.elibrary.repository.ReaderRepository;
-import edu.summer.spring.elibrary.repository.UserRepository;
+import edu.summer.spring.elibrary.model.*;
+import edu.summer.spring.elibrary.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Component
@@ -40,6 +38,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private ReaderRepository readerRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     @Override
     public LibrarianDto addLibrarian(LibrarianDto librarianDto) throws NotUniqueDataException {
@@ -89,13 +90,29 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String addBook(BookDto bookDto) {
-        return null;
+    public BookDto addBook(BookDto bookDto) throws NotUniqueDataException {
+        Optional<Book> bookFromDb = bookRepository.findBookByISBN(bookDto.getISBN());
+        if (bookFromDb.isPresent()) {
+            throw new NotUniqueDataException("Not unique ISBN", bookFromDb.get().getISBN());
+        } else {
+            Book book = new Book(bookDto.getTitle(),
+                    bookDto.getAuthor(),
+                    bookDto.getPublisher(),
+                    LocalDate.parse(bookDto.getPublishingDate(),
+                            DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)),
+                    bookDto.getISBN(),
+                    bookDto.getQuantity());
+            return BookMapper.toBookDto(bookRepository.save(book));
+        }
     }
 
     @Override
-    public String deleteBook(BookDto bookDto) {
-        return null;
+    public BookDto deleteBook(BookDto bookDto) throws FoundNoInstanceException {
+        Book book = bookRepository.findBookByISBN(bookDto.getISBN())
+                                .orElseThrow(() -> new FoundNoInstanceException("No book found with specified ISBN."));
+        loanRepository.deleteLoansByBook(book); // every loan with book to delete will be deleted
+        bookRepository.delete(book); // return value should be 1
+        return BookMapper.toBookDto(book);
     }
 
     @Override

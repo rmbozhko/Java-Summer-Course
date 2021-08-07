@@ -1,4 +1,4 @@
-package edu.summer.spring.elibrary.controller.request;
+package edu.summer.spring.elibrary.controller.command;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
-public class UserSignupRequest {
+public class UserFormCommand {
     private String username;
     String password;
     String firstName;
