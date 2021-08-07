@@ -46,7 +46,7 @@
         <tbody>
         <#list readers?keys as key>
             <tr>
-                <td><span>${readers[key].username} | ${readers[key].password} | ${readers[key].active?then('True', 'False')}</span></td>
+                <td><span>${readers[key].username} | ${readers[key].active?then('True', 'False')}</span></td>
                 <td><span>${key}</span></td>
             </tr>
         </#list>

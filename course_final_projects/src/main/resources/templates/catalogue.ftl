@@ -4,7 +4,7 @@
 <@common.page title = "Catalogue">
     <a href="/user/profile/info">To user profile info</a>
     <div>
-        <@auth.logout />
+        <@auth.signout />
     </div>
     <form method="post" action="search">
         <input type="hidden" name="_csrf" value="${_csrf.token}" />

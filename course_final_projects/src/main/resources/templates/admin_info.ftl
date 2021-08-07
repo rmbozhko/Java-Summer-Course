@@ -8,6 +8,9 @@
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
                 <input type="text" name="username" placeholder="username" required/>
                 <input type="text" name="password" placeholder="password" required/>
+                <input type="text" name="firstName" placeholder="first name" required/>
+                <input type="text" name="lastName" placeholder="last name" required/>
+                <input type="email" name="email" placeholder="E-Mail" required/>
                 <button type="submit">Add the librarian</button>
             </form>
         </div>
