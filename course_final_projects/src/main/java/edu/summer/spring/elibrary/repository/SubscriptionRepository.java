@@ -1,6 +1,6 @@
-package edu.summer.spring.elibrary.repos;
+package edu.summer.spring.elibrary.repository;
 
-import edu.summer.spring.elibrary.entity.Subscription;
+import edu.summer.spring.elibrary.model.Subscription;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

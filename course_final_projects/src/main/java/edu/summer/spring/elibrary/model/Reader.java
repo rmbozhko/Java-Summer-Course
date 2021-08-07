@@ -1,4 +1,4 @@
-package edu.summer.spring.elibrary.entity;
+package edu.summer.spring.elibrary.model;
 
 import lombok.*;
 
@@ -19,10 +19,10 @@ public class Reader {
     @NonNull
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn
-    private User    user;
+    private User user;
 
     @NonNull
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn
-    private Subscription    subscription;
+    private Subscription subscription;
 }

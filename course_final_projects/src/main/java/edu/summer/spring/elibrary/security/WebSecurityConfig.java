@@ -1,6 +1,5 @@
-package edu.summer.spring.elibrary.config;
+package edu.summer.spring.elibrary.security;
 
-import edu.summer.spring.elibrary.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.sql.DataSource;
 
@@ -20,25 +20,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private DataSource  dataSource;
 
     @Autowired
-    private UserService userService;
+    private CustomUserDetailsService userDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
 //                .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/", "/book/*", "/signup", "/search", "/sort").permitAll()
-//                .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
-//                .antMatchers("/reader/**").hasRole("READER")
-//                .antMatchers("/librarian/**").hasRole("LIBRARIAN")
-                    .anyRequest().authenticated()
+//                    .antMatchers("/admin/**").hasRole("ADMIN")
+//                    .antMatchers("/reader/**").hasRole("READER")
+//                    .antMatchers("/librarian/**").hasRole("LIBRARIAN")
+                    .antMatchers("/", "/book/*", "/signup", "/search", "/sort", "/static/*").permitAll()
+                .anyRequest().authenticated()
                 .and()
                     .formLogin()
                     .loginPage("/login")
                     .permitAll()
                 .and()
                     .logout()
-                    .logoutSuccessUrl("/")
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                     .permitAll();
     }
 
@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService)
+        auth.userDetailsService(userDetailsService)
                 .passwordEncoder(bcryptPasswordEncoder());
     }
 }

@@ -1,5 +1,6 @@
-package edu.summer.spring.elibrary.entity;
+package edu.summer.spring.elibrary.model;
 
+import edu.summer.spring.elibrary.model.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,5 +24,5 @@ public class Librarian {
     @NonNull
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn
-    private User    user;
+    private User user;
 }

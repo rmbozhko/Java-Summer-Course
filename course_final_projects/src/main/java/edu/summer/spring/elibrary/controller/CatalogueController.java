@@ -1,7 +1,10 @@
 package edu.summer.spring.elibrary.controller;
 
-import edu.summer.spring.elibrary.entity.*;
-import edu.summer.spring.elibrary.repos.*;
+import edu.summer.spring.elibrary.model.Book;
+import edu.summer.spring.elibrary.model.Loan;
+import edu.summer.spring.elibrary.model.Subscription;
+import edu.summer.spring.elibrary.model.User;
+import edu.summer.spring.elibrary.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 public class CatalogueController {

@@ -1,4 +1,4 @@
-package edu.summer.spring.elibrary.entity;
+package edu.summer.spring.elibrary.model;
 
 import lombok.*;
 
@@ -20,7 +20,7 @@ public class Loan {
     @NonNull
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn
-    private Book        book;
+    private Book book;
 
     @NonNull
     @Column(nullable = false)
@@ -42,7 +42,7 @@ public class Loan {
     @NonNull
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn
-    private Librarian    librarian;
+    private Librarian librarian;
 
     public static Double   DAILY_PENALTY_HRV = 30.0;
 }

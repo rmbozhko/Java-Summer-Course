@@ -1,4 +1,4 @@
-package edu.summer.spring.elibrary.entity;
+package edu.summer.spring.elibrary.model;
 
 import lombok.*;
 

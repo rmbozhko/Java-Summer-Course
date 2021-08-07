@@ -1,10 +1,10 @@
 package edu.summer.spring.elibrary.controller;
 
-import edu.summer.spring.elibrary.entity.*;
-import edu.summer.spring.elibrary.repos.LibrarianRepository;
-import edu.summer.spring.elibrary.repos.LoanRepository;
-import edu.summer.spring.elibrary.repos.ReaderRepository;
-import edu.summer.spring.elibrary.repos.UserRepository;
+import edu.summer.spring.elibrary.model.*;
+import edu.summer.spring.elibrary.repository.LibrarianRepository;
+import edu.summer.spring.elibrary.repository.LoanRepository;
+import edu.summer.spring.elibrary.repository.ReaderRepository;
+import edu.summer.spring.elibrary.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

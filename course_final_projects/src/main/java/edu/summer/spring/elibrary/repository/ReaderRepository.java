@@ -1,7 +1,7 @@
-package edu.summer.spring.elibrary.repos;
+package edu.summer.spring.elibrary.repository;
 
-import edu.summer.spring.elibrary.entity.Reader;
-import edu.summer.spring.elibrary.entity.User;
+import edu.summer.spring.elibrary.model.Reader;
+import edu.summer.spring.elibrary.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

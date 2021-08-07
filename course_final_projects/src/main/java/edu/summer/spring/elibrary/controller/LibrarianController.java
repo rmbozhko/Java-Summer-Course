@@ -1,14 +1,16 @@
 package edu.summer.spring.elibrary.controller;
 
-import edu.summer.spring.elibrary.entity.Librarian;
-import edu.summer.spring.elibrary.entity.Loan;
-import edu.summer.spring.elibrary.entity.Reader;
-import edu.summer.spring.elibrary.entity.User;
-import edu.summer.spring.elibrary.repos.LibrarianRepository;
-import edu.summer.spring.elibrary.repos.LoanRepository;
-import edu.summer.spring.elibrary.repos.ReaderRepository;
+import edu.summer.spring.elibrary.model.Librarian;
+import edu.summer.spring.elibrary.model.Loan;
+import edu.summer.spring.elibrary.model.Reader;
+import edu.summer.spring.elibrary.model.User;
+import edu.summer.spring.elibrary.repository.LibrarianRepository;
+import edu.summer.spring.elibrary.repository.LoanRepository;
+import edu.summer.spring.elibrary.repository.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;

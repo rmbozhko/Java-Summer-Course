@@ -1,10 +1,9 @@
-package edu.summer.spring.elibrary.repos;
+package edu.summer.spring.elibrary.repository;
 
-import edu.summer.spring.elibrary.entity.Book;
+import edu.summer.spring.elibrary.model.Book;
 import lombok.NonNull;
 import org.springframework.data.repository.CrudRepository;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
