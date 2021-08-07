@@ -1,22 +1,25 @@
 package edu.summer.spring.elibrary.service;
 
-import edu.summer.spring.elibrary.controller.exception.NotUniqueDataException;
+import edu.summer.spring.elibrary.exception.FoundNoInstanceException;
+import edu.summer.spring.elibrary.exception.NotUniqueDataException;
 import edu.summer.spring.elibrary.dto.mapper.LibrarianMapper;
 import edu.summer.spring.elibrary.dto.model.BookDto;
 import edu.summer.spring.elibrary.dto.model.LibrarianDto;
 import edu.summer.spring.elibrary.dto.model.ReaderDto;
 import edu.summer.spring.elibrary.model.Librarian;
+import edu.summer.spring.elibrary.model.Loan;
 import edu.summer.spring.elibrary.model.Role;
 import edu.summer.spring.elibrary.model.User;
 import edu.summer.spring.elibrary.repository.LibrarianRepository;
+import edu.summer.spring.elibrary.repository.LoanRepository;
 import edu.summer.spring.elibrary.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 @Component
 public class AdminServiceImpl implements AdminService {
@@ -29,6 +32,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private LibrarianRepository librarianRepository;
+
+    @Autowired
+    private LoanRepository loanRepository;
 
     @Override
     public LibrarianDto addLibrarian(LibrarianDto librarianDto) throws NotUniqueDataException {
@@ -50,8 +56,21 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String deleteLibrarian(LibrarianDto librarianDto) {
-        return null;
+    public LibrarianDto deleteLibrarian(LibrarianDto librarianDto) throws FoundNoInstanceException {
+            User userToDelete = userRepository.findByUsername(librarianDto.getUsername())
+                                                        .orElseThrow(
+                                                                () -> new FoundNoInstanceException("No user with specified username was found."));
+        Optional<Librarian> librarian = librarianRepository.findByUser(userToDelete);
+        Librarian librarianToDelete = librarian.orElseThrow(() -> new FoundNoInstanceException("User with specified username isn't librarian"));
+        List<Loan> loansOfLibrarian = loanRepository.findAllByLibrarian(librarianToDelete);
+        Librarian librarianPresent = librarianRepository.findByPresentIsTrue().get(); // suppose, there should always be librarian on duty
+        for (Loan loan : loansOfLibrarian) {
+            loan.setLibrarian(librarianPresent);
+            loanRepository.save(loan);
+        }
+        librarianRepository.delete(librarianToDelete);
+        userRepository.delete(userToDelete);
+        return LibrarianMapper.toLibrarianDto(librarianToDelete);
     }
 
     @Override

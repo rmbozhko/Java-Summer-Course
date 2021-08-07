@@ -1,6 +1,7 @@
 package edu.summer.spring.elibrary.controller;
 
-import edu.summer.spring.elibrary.controller.exception.NotUniqueDataException;
+import edu.summer.spring.elibrary.exception.FoundNoInstanceException;
+import edu.summer.spring.elibrary.exception.NotUniqueDataException;
 import edu.summer.spring.elibrary.controller.request.UserSignupRequest;
 import edu.summer.spring.elibrary.dto.model.LibrarianDto;
 import edu.summer.spring.elibrary.model.*;
@@ -9,18 +10,16 @@ import edu.summer.spring.elibrary.repository.LibrarianRepository;
 import edu.summer.spring.elibrary.repository.LoanRepository;
 import edu.summer.spring.elibrary.repository.UserRepository;
 import edu.summer.spring.elibrary.service.AdminServiceImpl;
+import edu.summer.spring.elibrary.service.LibrarianService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -42,6 +41,9 @@ public class AdminController {
 
     @Autowired
     private AdminServiceImpl adminService;
+
+    @Autowired
+    private LibrarianService librarianService;
 
     @PostMapping(path = "/add/librarian", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
     public String   addLibrarian(@AuthenticationPrincipal User user,
@@ -71,31 +73,13 @@ public class AdminController {
                                     @RequestParam String username,
                                     Model model) {
         model.addAttribute("user", user);
-        if (username != null && !username.isEmpty()) {
-            Optional<User> userToDelete = userRepository.findByUsername(username);
-            userToDelete.ifPresentOrElse(
-                    usr -> {
-                        Optional<Librarian> librarianToDelete = librarianRepository.findByUser(usr);
-                        librarianToDelete.ifPresentOrElse(
-                                librarian -> {
-                                    List<Loan> loansOfLibrarian = loanRepository.findAllByLibrarian(librarian);
-                                    Librarian librarianPresent = librarianRepository.findByPresentIsTrue().get();
-                                    for (Loan loan : loansOfLibrarian) {
-                                        loan.setLibrarian(librarianPresent);
-                                        loanRepository.save(loan);
-                                    }
-                                    librarianRepository.delete(librarian);
-                                    userRepository.delete(usr);
-                                    model.addAttribute("message", "Librarian was deleted.");
-                                },
-                                () -> model.addAttribute("message", "User with specified username isn't librarian"));
-                    },
-                    () -> model.addAttribute("message", "No user with specified username was found.")
-            );
-        } else {
-            model.addAttribute("message", "Incorrect username.");
+        try {
+            LibrarianDto librarianDto = librarianService.findByUsername(username);
+            adminService.deleteLibrarian(librarianDto);
+            model.addAttribute("message", "Librarian was deleted.");
+        } catch (FoundNoInstanceException e) {
+            model.addAttribute("message", e.getMessage());
         }
-
         return "admin_info";
     }
 
