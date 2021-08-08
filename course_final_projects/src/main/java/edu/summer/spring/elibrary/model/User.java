@@ -39,7 +39,7 @@ public class User implements UserDetails {
     private String      firstName;
 
     @NonNull
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "lastName")
     private String      lastName;
 
     @NonNull
