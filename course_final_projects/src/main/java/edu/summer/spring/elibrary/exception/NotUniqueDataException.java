@@ -3,7 +3,7 @@ package edu.summer.spring.elibrary.exception;
 public class NotUniqueDataException extends Exception {
     private final String      data;
 
-    public String getLoginData() {
+    public String getData() {
         return data;
     }
 

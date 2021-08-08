@@ -8,10 +8,6 @@ import edu.summer.spring.elibrary.dto.model.ReaderDto;
 import edu.summer.spring.elibrary.exception.FoundNoInstanceException;
 import edu.summer.spring.elibrary.exception.NotUniqueDataException;
 import edu.summer.spring.elibrary.model.User;
-import edu.summer.spring.elibrary.repository.BookRepository;
-import edu.summer.spring.elibrary.repository.LibrarianRepository;
-import edu.summer.spring.elibrary.repository.LoanRepository;
-import edu.summer.spring.elibrary.repository.UserRepository;
 import edu.summer.spring.elibrary.service.AdminServiceImpl;
 import edu.summer.spring.elibrary.service.BookService;
 import edu.summer.spring.elibrary.service.LibrarianService;
@@ -53,7 +49,7 @@ public class AdminController {
             registerLibrarian(librarian);
             model.addAttribute("message", "Librarian was added.");
         } catch (NotUniqueDataException e) {
-            model.addAttribute("message", e.getMessage() + " " + e.getLoginData());
+            model.addAttribute("message", e.getMessage() + " " + e.getData());
         }
         return "admin_info";
     }

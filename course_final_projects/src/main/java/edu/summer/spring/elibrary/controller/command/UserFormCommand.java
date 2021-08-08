@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class UserFormCommand {
-    private String username;
+    String username;
     String password;
     String firstName;
     String lastName;
