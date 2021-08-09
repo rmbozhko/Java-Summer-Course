@@ -2,14 +2,12 @@ package edu.summer.spring.elibrary.controller;
 
 import edu.summer.spring.elibrary.dto.model.BookDto;
 import edu.summer.spring.elibrary.exception.FoundNoInstanceException;
+import edu.summer.spring.elibrary.exception.LoanDuplicateException;
+import edu.summer.spring.elibrary.exception.NoFreeBookException;
 import edu.summer.spring.elibrary.model.Book;
-import edu.summer.spring.elibrary.model.Loan;
-import edu.summer.spring.elibrary.model.Subscription;
 import edu.summer.spring.elibrary.model.User;
-import edu.summer.spring.elibrary.repository.*;
 import edu.summer.spring.elibrary.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,31 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDate;
-import java.util.Optional;
 
 @Controller
 public class CatalogueController {
-
-    @Autowired
-    private BookRepository bookRepository;
-
-    @Autowired
-    private SubscriptionRepository subscriptionRepository;
-
-    @Autowired
-    private LoanRepository loanRepository;
-
-    @Autowired
-    private UserRepository  userRepository;
-
-    @Autowired
-    private ReaderRepository readerRepository;
-
-    @Autowired
-    private LibrarianRepository librarianRepository;
 
     @Autowired
     private BookService bookService;
@@ -81,7 +57,6 @@ public class CatalogueController {
         return "book";
     }
 
-    // only for user-readers
     @PostMapping("/order/{id}")
     public String   orderBookById(@AuthenticationPrincipal User user,
                                   @PathVariable String id,
@@ -89,11 +64,12 @@ public class CatalogueController {
                                   Model model) {
         try {
             BookDto bookDto = bookService.orderBookById(Integer.valueOf(id), Integer.parseInt(loanPeriod), user);
-            model.addAttribute("message", "You have successfully lent the book");
-            model.addAttribute("books", bookService.findAll());
-        } catch (FoundNoInstanceException e) {
+            model.addAttribute("message", String.format("You have successfully lent the book: %s for %s day(s)", bookDto.getTitle(),
+                                                                                                                    loanPeriod));
+        } catch (FoundNoInstanceException | LoanDuplicateException | NoFreeBookException e) {
             model.addAttribute("message", e.getMessage());
         }
+        model.addAttribute("books", bookService.findAll());
         return "catalogue";
     }
 }
