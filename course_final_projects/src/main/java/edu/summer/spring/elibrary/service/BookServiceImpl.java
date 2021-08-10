@@ -14,10 +14,14 @@ import edu.summer.spring.elibrary.repository.LibrarianRepository;
 import edu.summer.spring.elibrary.repository.LoanRepository;
 import edu.summer.spring.elibrary.repository.SubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Optional;
+import java.util.List;
 
 @Component
 public class BookServiceImpl implements BookService {
@@ -47,36 +51,36 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Iterable<Book> findAllByTitleOrAuthorOrISBN(String title, String author, String isbn) {
+    public List<Book> findAllByTitleOrAuthorOrISBN(String title, String author, String isbn) {
         return bookRepository.findAllByTitleOrAuthorOrISBN(title, author, isbn);
     }
 
     @Override
-    public Iterable<Book> findAll() {
+    public List<Book> findAll() {
         return bookRepository.findAll();
     }
 
     @Override
-    public Iterable<Book> sortByProperty(String property) {
-        Iterable<Book> books;
+    public Page<Book> sortByProperty(String property) {
+        Pageable pageWithSortedContent;
         switch (property) {
             case "title":
-                books = bookRepository.findAllByOrderByTitleAsc();
+                pageWithSortedContent = PageRequest.of(0, 20, Sort.by("title").ascending());
                 break;
             case "author":
-                books = bookRepository.findAllByOrderByAuthorAsc();
+                pageWithSortedContent = PageRequest.of(0, 20, Sort.by("author").ascending());
                 break;
             case "publisher":
-                books = bookRepository.findAllByOrderByPublisherAsc();
+                pageWithSortedContent = PageRequest.of(0, 20, Sort.by("publisher").ascending());
                 break;
             case "publishingDate":
-                books = bookRepository.findAllByOrderByPublishingDateDesc();
+                pageWithSortedContent = PageRequest.of(0, 20, Sort.by("publishingDate").descending());
                 break;
             default:
-                books = bookRepository.findAll();
+                pageWithSortedContent = PageRequest.of(0, 20);
                 break;
         }
-        return books;
+        return bookRepository.findAll(pageWithSortedContent);
     }
 
     @Override
@@ -91,6 +95,13 @@ public class BookServiceImpl implements BookService {
         BookDto bookDto = findById(id);
         orderBook(bookDto, user, loanPeriod);
         return findById(id);
+    }
+
+    @Override
+    public Page<Book> getBooksFromCataloguePage(String page) {
+        int pageNumber = Integer.parseInt(page) - 1;
+        Pageable cataloguePage = (Pageable) PageRequest.of(pageNumber, 5);
+        return bookRepository.findAll(cataloguePage);
     }
 
     private void orderBook(BookDto bookDto, User user, Integer loanPeriod) throws FoundNoInstanceException, LoanDuplicateException, NoFreeBookException {
