@@ -28,17 +28,17 @@ public class CatalogueController {
         return "catalogue";
     }
 
-    @PostMapping("search")
+    @GetMapping("/search")
     public String   searchByTitle(@RequestParam(defaultValue = "") String parameter,
                                   Model model) {
         Iterable<Book> books = (!parameter.isEmpty()) ? bookService.findAllByTitleOrAuthorOrISBN(parameter, parameter, parameter)
-                                        : bookService.findAll();
+                                                        : bookService.findAll();
         model.addAttribute("books", books);
         model.addAttribute("parameter", parameter);
         return "catalogue";
     }
 
-    @PostMapping("sort")
+    @GetMapping("/sort")
     public String   sortByProperty(@RequestParam(value = "sortProperty", required = false, defaultValue = "") String sortPropertyValue,
                                    Model model) {
         model.addAttribute("books", bookService.sortByProperty(sortPropertyValue));
@@ -70,6 +70,6 @@ public class CatalogueController {
             model.addAttribute("message", e.getMessage());
         }
         model.addAttribute("books", bookService.findAll());
-        return "catalogue";
+        return "redirect:/";
     }
 }

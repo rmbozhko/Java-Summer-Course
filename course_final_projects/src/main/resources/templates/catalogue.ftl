@@ -2,29 +2,34 @@
 <#import "parts/authorization.ftl" as auth>
 
 <@common.page title = "Catalogue">
-    <a href="/user/profile/info">To user profile info</a>
-    <div>
-        <@auth.signout />
-    </div>
-    <form method="post" action="search">
-        <input type="hidden" name="_csrf" value="${_csrf.token}" />
+    <div class="container">
+    <form method="get" action="search">
         <input type="text" name="parameter" placeholder="Title, author or ISBN">
         <button type="submit">Search for a book</button>
     </form>
-    <form method="post" action="sort">
-        <input type="hidden" name="_csrf" value="${_csrf.token}" />
-        <p><b>Sorting by</b></p>
-        <input type="radio" name="sortProperty" value="title">Title
-        <input type="radio" name="sortProperty" value="author">Author
-        <input type="radio" name="sortProperty" value="publisher">Publisher
-        <input type="radio" name="sortProperty" value="publishingDate">Publishing Date
-        <button type="submit">Enter</button>
-    </form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col"><a href="/sort?sortProperty=title">Title</a></th>
+            <th scope="col"><a href="/sort?sortProperty=author">Author</a></th>
+            <th scope="col"><a href="/sort?sortProperty=publisher">Publisher</a></th>
+            <th scope="col"><a href="/sort?sortProperty=publishingDate">Publishing Date</a></th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
     <#list books as book>
-        <div>
-            <span><a href="/book/${book.id}"><b>${book.title}</b>, <i>${book.author}, ${book.publisher}, ${book.publishingDate}</i></a></span>
-        </div>
-    <#else>
-        <p>No books available</p>
+        <tr>
+            <th scope="row">${book.id}</th>
+            <td>${book.title}</td>
+            <td>${book.author}</td>
+            <td>${book.publisher}</td>
+            <td>${book.publishingDate}</td>
+            <td><a class="btn btn-primary" href="/book/${book.id}" role="button">Order</a></td>
+        </tr>
     </#list>
+        </tbody>
+    </table>
+    </div>
 </@common.page>
