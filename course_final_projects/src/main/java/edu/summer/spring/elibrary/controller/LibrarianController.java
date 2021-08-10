@@ -44,6 +44,6 @@ public class LibrarianController {
         } catch (FoundNoInstanceException e) {
             model.addAttribute("message", e.getMessage());
         }
-        return "librarian_info";
+        return "redirect:/user/profile/info";
     }
 }

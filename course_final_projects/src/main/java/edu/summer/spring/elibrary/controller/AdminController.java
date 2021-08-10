@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 @Controller
@@ -51,7 +52,7 @@ public class AdminController {
         } catch (NotUniqueDataException e) {
             model.addAttribute("message", e.getMessage() + " " + e.getData());
         }
-        return "admin_info";
+        return "redirect:/user/profile/info";
     }
 
     private LibrarianDto    registerLibrarian(UserFormCommand librarian) throws NotUniqueDataException {
@@ -75,7 +76,7 @@ public class AdminController {
         } catch (FoundNoInstanceException e) {
             model.addAttribute("message", e.getMessage());
         }
-        return "admin_info";
+        return "redirect:/user/profile/info";
     }
 
     @PostMapping("de_activate/user")
@@ -92,16 +93,18 @@ public class AdminController {
         } catch (FoundNoInstanceException e) {
             model.addAttribute("message", e.getMessage());
         }
-        return "admin_info";
+        return "redirect:/user/profile/info";
     }
 
     @PostMapping(path = "add/book", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
     public String   addBook(@AuthenticationPrincipal User user,
-                            BookFormCommand book,
+                            @Valid BookFormCommand book,
                             Model model,
                             BindingResult bindingResult) {
         model.addAttribute("user", user);
-
+        // pagination
+        // PRG
+        // Validation
         if (bindingResult.hasErrors()) {
             // TODO Validate form parameters
             // handle if there are errors: use Bootstrap :valid, :invalid for input which contains errors
@@ -113,7 +116,7 @@ public class AdminController {
                 model.addAttribute("message", e.getMessage());
             }
         }
-        return "admin_info";
+        return "redirect:/user/profile/info";
     }
 
     private BookDto registerBook(BookFormCommand book) {
@@ -141,7 +144,7 @@ public class AdminController {
                 model.addAttribute("message", e.getMessage());
             }
 //        }
-        return "admin_info";
+        return "redirect:/user/profile/info";
     }
 
     @PostMapping("update/book")
@@ -156,7 +159,7 @@ public class AdminController {
         } catch (FoundNoInstanceException e) {
             model.addAttribute("message", e.getMessage());
         }
-        return "admin_info";
+        return "redirect:/user/profile/info";
     }
 
     private BookDto getBookFromUpdateForm(BookFormCommand bookFormCommand) {

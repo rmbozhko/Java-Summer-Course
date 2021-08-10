@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class SignUpController {
@@ -22,18 +21,18 @@ public class SignUpController {
         return "signup";
     }
 
-//    TODO: Fix bug with sign up (doesn't get called when button is pressed)
-    @PostMapping(path = "signup", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+    @PostMapping(path = "/signup", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
     public String   signUpUser(UserFormCommand user, Model model) {
         try {
             registerUser(user);
-            return "redirect:/";
+            return "redirect:/login";
         } catch (NotUniqueDataException e) {
             model.addAttribute("message", e.getMessage() + ": " + e.getData());
             return "signup";
         }
     }
 
+    // TODO use Builder instead of setters
     private ReaderDto registerUser(UserFormCommand user) throws NotUniqueDataException {
         ReaderDto readerDto = new ReaderDto().setUsername(user.getUsername())
                             .setPassword(user.getPassword())
