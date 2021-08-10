@@ -8,6 +8,7 @@ import edu.summer.spring.elibrary.model.Book;
 import edu.summer.spring.elibrary.model.User;
 import edu.summer.spring.elibrary.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 public class CatalogueController {
 
@@ -23,15 +26,18 @@ public class CatalogueController {
     private BookService bookService;
 
     @GetMapping
-    public String   index(Model model) {
-        model.addAttribute("books", bookService.findAll());
+    public String   index(@RequestParam(defaultValue = "1", required = false) String page,
+                          Model model) {
+        Page<Book> cataloguePage = bookService.getBooksFromCataloguePage(page);
+        model.addAttribute("books", cataloguePage.getContent());
+        model.addAttribute("pagesNum", cataloguePage.getTotalPages());
         return "catalogue";
     }
 
     @GetMapping("/search")
     public String   searchByTitle(@RequestParam(defaultValue = "") String parameter,
                                   Model model) {
-        Iterable<Book> books = (!parameter.isEmpty()) ? bookService.findAllByTitleOrAuthorOrISBN(parameter, parameter, parameter)
+        List<Book> books = (!parameter.isEmpty()) ? bookService.findAllByTitleOrAuthorOrISBN(parameter, parameter, parameter)
                                                         : bookService.findAll();
         model.addAttribute("books", books);
         model.addAttribute("parameter", parameter);
@@ -41,7 +47,9 @@ public class CatalogueController {
     @GetMapping("/sort")
     public String   sortByProperty(@RequestParam(value = "sortProperty", required = false, defaultValue = "") String sortPropertyValue,
                                    Model model) {
-        model.addAttribute("books", bookService.sortByProperty(sortPropertyValue));
+        Page<Book> sortedPage = bookService.sortByProperty(sortPropertyValue);
+        model.addAttribute("books", sortedPage.getContent());
+        model.addAttribute("pagesNum", sortedPage.getTotalPages());
         return "catalogue";
     }
 
