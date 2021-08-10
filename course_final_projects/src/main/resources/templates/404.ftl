@@ -1,28 +1,10 @@
-<!doctype html>
-<!--[if lte IE 9]>
-<html lang="en" class="oldie">
-<![endif]-->
-<!--[if gt IE 9]><!-->
-<html lang="en">
-<!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Spacy 404 Page</title>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <link rel="stylesheet" media="all" href="../static/css/style.css" />
-</head>
-<body>
-<div class="container">
-    <div class="row">
-        <div class="xs-12 md-6 mx-auto">
-            <div id="countUp">
-                <div class="number" data-count="404">404</div>
-                <div class="text">Page not found</div>
-                <div class="text">I'm probably working on something that has blown up.</div>
-            </div>
-        </div>
+<#import "parts/common.ftl" as common>
+
+<@common.page title = "Not Found">
+<div class="d-flex justify-content-center align-items-center" id="main">
+    <h1 class="mr-3 pr-3 align-top border-right inline-block align-content-center">404</h1>
+    <div class="inline-block align-middle">
+        <h2 class="font-weight-normal lead" id="desc">The page you requested was not found.</h2>
     </div>
 </div>
-</body>
-</html>
+</@common.page>
