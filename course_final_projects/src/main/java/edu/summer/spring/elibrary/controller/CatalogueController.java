@@ -10,13 +10,9 @@ import edu.summer.spring.elibrary.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -24,7 +20,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-@Controller
+@RestController
 @Validated
 public class CatalogueController {
 
@@ -32,61 +28,61 @@ public class CatalogueController {
     private BookService bookService;
 
     @GetMapping
-    public String   index(@RequestParam(defaultValue = "1", required = false) @PositiveOrZero Integer page,
-                          Model model) {
+    public ModelAndView index(@RequestParam(defaultValue = "1", required = false) @PositiveOrZero Integer page) {
+        ModelAndView modelAndView = new ModelAndView("catalogue");
         Page<Book> cataloguePage = bookService.getBooksFromCataloguePage(page);
-        model.addAttribute("books", cataloguePage.getContent());
-        model.addAttribute("pagesNum", cataloguePage.getTotalPages());
-        return "catalogue";
+        modelAndView.addObject("books", cataloguePage.getContent());
+        modelAndView.addObject("pagesNum", cataloguePage.getTotalPages());
+        return modelAndView;
     }
 
     @GetMapping("/search")
-    public String   searchByTitle(@RequestParam(defaultValue = "") @NotBlank String parameter,
-                                  Model model) {
+    public ModelAndView   searchByTitle(@RequestParam(defaultValue = "") @NotBlank String parameter) {
+        ModelAndView modelAndView = new ModelAndView("catalogue");
         List<Book> books = (!parameter.isEmpty()) ? bookService.findAllByTitleOrAuthorOrISBN(parameter, parameter, parameter)
                                                         : bookService.findAll();
-        model.addAttribute("books", books);
-        model.addAttribute("parameter", parameter);
-        return "catalogue";
+        modelAndView.addObject("books", books);
+        modelAndView.addObject("parameter", parameter);
+        return modelAndView;
     }
 
     @GetMapping("/sort")
-    public String   sortByProperty(@RequestParam(value = "sortProperty",
+    public ModelAndView   sortByProperty(@RequestParam(value = "sortProperty",
                                                 required = false,
                                                 defaultValue = "")
-                                                @Pattern(regexp = "(title|author|publisher|publishingDate)") String sortPropertyValue,
-                                                                        Model model) {
+                                                @Pattern(regexp = "(title|author|publisher|publishingDate)") String sortPropertyValue) {
         Page<Book> sortedPage = bookService.sortByProperty(sortPropertyValue);
-        model.addAttribute("books", sortedPage.getContent());
-        model.addAttribute("pagesNum", sortedPage.getTotalPages());
-        return "catalogue";
+        ModelAndView modelAndView = new ModelAndView("catalogue");
+        modelAndView.addObject("books", sortedPage.getContent());
+        modelAndView.addObject("pagesNum", sortedPage.getTotalPages());
+        return modelAndView;
     }
 
     @GetMapping("/book/{id}")
-    public String   getBook(@PathVariable @PositiveOrZero Integer id,
-                            Model model) {
+    public ModelAndView getBook(@PathVariable @PositiveOrZero Integer id) {
+        ModelAndView modelAndView = new ModelAndView("book");
         try {
             BookDto bookDto = bookService.findById(id);
-            model.addAttribute("book", bookDto);
+            modelAndView.addObject("book", bookDto);
         } catch (FoundNoInstanceException e) {
-            model.addAttribute("message", e.getMessage());
+            modelAndView.addObject("message", e.getMessage());
         }
-        return "book";
+        return modelAndView;
     }
 
     @PostMapping("/order/{id}")
-    public String   orderBookById(@AuthenticationPrincipal User user,
+    public ModelAndView   orderBookById(@AuthenticationPrincipal User user,
                                   @PathVariable @PositiveOrZero Integer id,
-                                  @RequestParam(name = "loan_period") @Positive Integer loanPeriod,
-                                  Model model) {
+                                  @RequestParam(name = "loan_period") @Positive Integer loanPeriod) {
+        ModelAndView modelAndView = new ModelAndView("redirect:/");
         try {
             BookDto bookDto = bookService.orderBookById(id, loanPeriod, user);
-            model.addAttribute("message", String.format("You have successfully lent the book: %s for %s day(s)", bookDto.getTitle(),
-                                                                                                                    loanPeriod));
+            modelAndView.addObject("message", String.format("You have successfully lent the book: %s for %s day(s)", bookDto.getTitle(),
+                                                                                                                                loanPeriod));
         } catch (FoundNoInstanceException | LoanDuplicateException | NoFreeBookException e) {
-            model.addAttribute("message", e.getMessage());
+            modelAndView.addObject("message", e.getMessage());
         }
-        model.addAttribute("books", bookService.findAll());
-        return "redirect:/";
+        modelAndView.addObject("books", bookService.findAll());
+        return modelAndView;
     }
 }

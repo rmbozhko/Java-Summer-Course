@@ -1,6 +1,6 @@
 <#macro page title>
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>${title}</title>
@@ -46,14 +46,16 @@
     </div>
 </nav>
 <div class="container">
-    <#if message??>
-        <div class="alert alert-primary" role="alert">
-            ${message}
-        </div>
-    </#if>
-    <#nested>
+    <div class="row">
+        <#if message??>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>${message}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </#if>
+        <#nested>
+    </div>
 </div>
-<#--<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" crossorigin="anonymous"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -72,7 +72,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="email">Email</label>
-                                <input type="text" class="form-control" id="email" placeholder="Email" name="email">
+                                <input type="email" class="form-control" id="email" placeholder="Email" name="email" required>
                             </div>
                             <br>
                             <div class="text-center">
