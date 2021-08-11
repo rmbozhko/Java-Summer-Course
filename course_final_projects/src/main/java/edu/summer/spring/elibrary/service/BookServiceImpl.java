@@ -95,7 +95,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> getBooksFromCataloguePage(Integer page) {
         int pageNumber = page - 1;
-        Pageable cataloguePage = (Pageable) PageRequest.of(pageNumber, 5);
+        Pageable cataloguePage = PageRequest.of(pageNumber, 5);
         return bookRepository.findAll(cataloguePage);
     }
 

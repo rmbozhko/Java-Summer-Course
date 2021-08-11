@@ -108,8 +108,6 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView("redirect:/user/profile/info");
 
         modelAndView.addObject("user", user);
-        // TODO solve problem with simultaneous pagination and sorting
-        // TODO make page for validation errors
         try {
             adminService.addBook(fromBookFormToDto(book));
             modelAndView.addObject("message", "Book was added");

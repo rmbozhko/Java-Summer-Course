@@ -1,6 +1,7 @@
 package edu.summer.spring.elibrary.service;
 
 import edu.summer.spring.elibrary.dto.mapper.ReaderMapper;
+import edu.summer.spring.elibrary.dto.mapper.UserMapper;
 import edu.summer.spring.elibrary.dto.model.ReaderDto;
 import edu.summer.spring.elibrary.exception.FoundNoInstanceException;
 import edu.summer.spring.elibrary.exception.NotUniqueDataException;
@@ -42,9 +43,8 @@ public class ReaderServiceImpl implements ReaderService {
         if (userRepository.findByUsername(readerDto.getUsername()).isPresent()) {
             throw new NotUniqueDataException("Not unique username", readerDto.getUsername());
         }
-        User user = new User(readerDto.getUsername(), encoder.encode(readerDto.getPassword()),
-                            readerDto.getFirstName(), readerDto.getLastName(),
-                            readerDto.getEmail());
+        readerDto.setPassword(encoder.encode(readerDto.getPassword()));
+        User user = UserMapper.toUser(readerDto);
         user.setActive(true);
         user.setRole(Role.READER);
         userRepository.save(user);

@@ -3,6 +3,7 @@ package edu.summer.spring.elibrary.service;
 import edu.summer.spring.elibrary.dto.mapper.BookMapper;
 import edu.summer.spring.elibrary.dto.mapper.LibrarianMapper;
 import edu.summer.spring.elibrary.dto.mapper.ReaderMapper;
+import edu.summer.spring.elibrary.dto.mapper.UserMapper;
 import edu.summer.spring.elibrary.dto.model.BookDto;
 import edu.summer.spring.elibrary.dto.model.LibrarianDto;
 import edu.summer.spring.elibrary.dto.model.ReaderDto;
@@ -48,12 +49,8 @@ public class AdminServiceImpl implements AdminService {
         if (userFromDb.isPresent()) {
             throw new NotUniqueDataException("Not unique username", userFromDb.get().getUsername());
         } else {
-            // TODO Replace with Builder
-            User librarianUserEntity = new User(librarianDto.getUsername(),
-                                                encoder.encode(librarianDto.getPassword()),
-                                                librarianDto.getFirstName(),
-                                                librarianDto.getLastName(),
-                                                librarianDto.getEmail());
+            librarianDto.setPassword(encoder.encode(librarianDto.getPassword()));
+            User librarianUserEntity = UserMapper.toUser(librarianDto);
             librarianUserEntity.setActive(true);
             librarianUserEntity.setRole(Role.LIBRARIAN);
             userRepository.save(librarianUserEntity);
@@ -96,15 +93,7 @@ public class AdminServiceImpl implements AdminService {
         if (bookFromDb.isPresent()) {
             throw new NotUniqueDataException("Not unique ISBN", bookFromDb.get().getISBN());
         } else {
-            Book book = Book.builder()
-                            .title(bookDto.getTitle())
-                            .author(bookDto.getAuthor())
-                            .publisher(bookDto.getPublisher())
-                            .publishingDate(LocalDate.parse(bookDto.getPublishingDate(),
-                                    DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)))
-                            .ISBN(bookDto.getISBN())
-                            .quantity(bookDto.getQuantity())
-                            .build();
+            Book book = BookMapper.toBook(bookDto);
             return BookMapper.toBookDto(bookRepository.save(book));
         }
     }
