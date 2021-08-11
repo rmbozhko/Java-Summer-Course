@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="col">
                                     <label for="password">Password</label>
-                                    <input type="text" class="form-control" id="password" placeholder="Password" name="password" required>
+                                    <input type="password" class="form-control" id="password" placeholder="Password" name="password" required>
                                 </div>
                             </div>
                             <div class="row">
@@ -72,7 +72,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="email">Email</label>
-                                <input type="text" class="form-control" id="email" placeholder="Email" name="email" required>
+                                <input type="text" class="form-control" id="email" placeholder="Email" name="email">
                             </div>
                             <br>
                             <div class="text-center">

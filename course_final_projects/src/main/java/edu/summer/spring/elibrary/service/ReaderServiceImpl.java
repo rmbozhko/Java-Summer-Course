@@ -36,9 +36,11 @@ public class ReaderServiceImpl implements ReaderService {
 
     @Override
     public ReaderDto addReader(ReaderDto readerDto) throws NotUniqueDataException {
+        // TODO Catch Exception from DB if username isn't unique
         if (userRepository.findByUsername(readerDto.getUsername()).isPresent()) {
             throw new NotUniqueDataException("Not unique username", readerDto.getUsername());
         }
+        //TODO Use Builder instead of this ...
         User user = new User(readerDto.getUsername(), encoder.encode(readerDto.getPassword()),
                             readerDto.getFirstName(), readerDto.getLastName(),
                             readerDto.getEmail());
@@ -56,11 +58,13 @@ public class ReaderServiceImpl implements ReaderService {
     public ReaderDto findByUsername(String username) throws FoundNoInstanceException {
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new FoundNoInstanceException("No user with specified username was found."));
-        return new ReaderDto().setUsername(user.getUsername())
-                            .setPassword(user.getPassword())
-                            .setFirstName(user.getFirstName())
-                            .setLastName(user.getLastName())
-                            .setEmail(user.getEmail());
+        return ReaderDto.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .build();
     }
 
     @Override

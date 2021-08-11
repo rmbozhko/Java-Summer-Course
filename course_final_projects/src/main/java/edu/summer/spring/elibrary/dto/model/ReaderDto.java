@@ -5,9 +5,10 @@ import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
+//@NoArgsConstructor
 @ToString
-@Accessors(chain = true)
+//@Accessors(chain = true)
 public class ReaderDto {
     private String      username;
     private String      password;

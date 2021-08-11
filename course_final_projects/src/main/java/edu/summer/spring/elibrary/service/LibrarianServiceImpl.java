@@ -29,11 +29,13 @@ public class LibrarianServiceImpl implements LibrarianService {
     public LibrarianDto findByUsername(String username) throws FoundNoInstanceException {
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new FoundNoInstanceException("No user with specified username was found."));
-        return new LibrarianDto().setUsername(user.getUsername())
-                .setPassword(user.getPassword())
-                .setFirstName(user.getFirstName())
-                .setLastName(user.getLastName())
-                .setEmail(user.getEmail());
+        return LibrarianDto.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .build();
     }
 
     @Override

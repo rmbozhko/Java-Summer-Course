@@ -35,13 +35,13 @@
         <div>
             Add book
             <form method="post" action="/admin/add/book">
-                <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                <input type="text" name="title" placeholder="Title"/>
-                <input type="text" name="author" placeholder="Author"/>
-                <input type="text" name="publisher" placeholder="Publisher"/>
-                <input type="date" name="publishingDate" placeholder="Date of publishing" />
-                <input type="text" name="ISBN" placeholder="ISBN" />
-                <input type="number" name="quantity" placeholder="Number of books" />
+                <input type="hidden" name="_csrf" value="${_csrf.token}" required/>
+                <input type="text" name="title" placeholder="Title" required/>
+                <input type="text" name="author" placeholder="Author" required/>
+                <input type="text" name="publisher" placeholder="Publisher" required/>
+                <input type="date" name="publishingDate" placeholder="Date of publishing" lang="en-us" required/>
+                <input type="text" name="ISBN" placeholder="ISBN" required/>
+                <input type="number" name="quantity" placeholder="Number of books" required/>
                 <button type="submit">Add the book</button>
             </form>
         </div>
@@ -49,7 +49,7 @@
             Delete book
             <form method="post" action="/admin/delete/book">
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                <input type="text" name="ISBN" placeholder="ISBN" />
+                <input type="text" name="ISBN" placeholder="ISBN" required/>
                 <button type="submit">Delete the book</button>
             </form>
         </div>

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-@Component
+@Component // TODO replace with @Service
 public class AdminServiceImpl implements AdminService {
     @Autowired
     private UserRepository userRepository;
@@ -48,6 +48,7 @@ public class AdminServiceImpl implements AdminService {
         if (userFromDb.isPresent()) {
             throw new NotUniqueDataException("Not unique username", userFromDb.get().getUsername());
         } else {
+            // TODO Replace with Builder
             User librarianUserEntity = new User(librarianDto.getUsername(),
                                                 encoder.encode(librarianDto.getPassword()),
                                                 librarianDto.getFirstName(),
@@ -63,9 +64,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public LibrarianDto deleteLibrarian(LibrarianDto librarianDto) throws FoundNoInstanceException {
-            User userToDelete = userRepository.findByUsername(librarianDto.getUsername())
-                                                        .orElseThrow(
-                                                                () -> new FoundNoInstanceException("No user with specified username was found."));
+        User userToDelete = userRepository.findByUsername(librarianDto.getUsername())
+                                            .orElseThrow(
+                                                    () -> new FoundNoInstanceException("No user with specified username was found."));
         Optional<Librarian> librarian = librarianRepository.findByUser(userToDelete);
         Librarian librarianToDelete = librarian.orElseThrow(() -> new FoundNoInstanceException("User with specified username isn't librarian"));
         List<Loan> loansOfLibrarian = loanRepository.findAllByLibrarian(librarianToDelete);

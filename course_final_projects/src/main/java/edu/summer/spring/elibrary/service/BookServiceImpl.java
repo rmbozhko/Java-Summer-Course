@@ -42,12 +42,7 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findBookByISBN(isbn)
                                     .orElseThrow(
                                             () -> new FoundNoInstanceException("No book with specified ISBN was found."));
-        return new BookDto().setTitle(book.getTitle())
-                            .setAuthor(book.getAuthor())
-                            .setPublisher(book.getPublisher())
-                            .setPublishingDate(book.getPublishingDate().toString())
-                            .setISBN(isbn)
-                            .setQuantity(book.getQuantity());
+        return BookMapper.toBookDto(book);
     }
 
     @Override
@@ -98,8 +93,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> getBooksFromCataloguePage(String page) {
-        int pageNumber = Integer.parseInt(page) - 1;
+    public Page<Book> getBooksFromCataloguePage(Integer page) {
+        int pageNumber = page - 1;
         Pageable cataloguePage = (Pageable) PageRequest.of(pageNumber, 5);
         return bookRepository.findAll(cataloguePage);
     }

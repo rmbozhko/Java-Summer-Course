@@ -12,21 +12,24 @@ import edu.summer.spring.elibrary.service.AdminServiceImpl;
 import edu.summer.spring.elibrary.service.BookService;
 import edu.summer.spring.elibrary.service.LibrarianService;
 import edu.summer.spring.elibrary.service.ReaderService;
+import org.hibernate.validator.constraints.ISBN;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
-@Controller
+@RestController
 @RequestMapping("admin")
+@Validated
 public class AdminController {
 
     @Autowired
@@ -42,133 +45,122 @@ public class AdminController {
     private BookService bookService;
 
     @PostMapping(path = "/add/librarian", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
-    public String   addLibrarian(@AuthenticationPrincipal User user,
-                                 UserFormCommand librarian,
-                                 Model model) {
-        model.addAttribute("user", user);
+    public ModelAndView addLibrarian(@AuthenticationPrincipal User user,
+                                     @Valid UserFormCommand librarian) {
+        ModelAndView modelAndView = new ModelAndView("redirect:/user/profile/info");
+        modelAndView.addObject("user", user);
         try {
             registerLibrarian(librarian);
-            model.addAttribute("message", "Librarian was added.");
+            modelAndView.addObject("message", "Librarian was added.");
         } catch (NotUniqueDataException e) {
-            model.addAttribute("message", e.getMessage() + " " + e.getData());
+            modelAndView.addObject("message", e.getMessage() + " " + e.getData());
         }
-        return "redirect:/user/profile/info";
+        return modelAndView;
     }
 
     private LibrarianDto    registerLibrarian(UserFormCommand librarian) throws NotUniqueDataException {
-        LibrarianDto librarianDto = new LibrarianDto().setUsername(librarian.getUsername())
-                                .setPassword(librarian.getPassword())
-                                .setFirstName(librarian.getFirstName())
-                                .setLastName(librarian.getLastName())
-                                .setEmail(librarian.getEmail());
+        LibrarianDto librarianDto = LibrarianDto.builder()
+                                                .username(librarian.getUsername())
+                                                .password(librarian.getPassword())
+                                                .firstName(librarian.getFirstName())
+                                                .lastName(librarian.getLastName())
+                                                .email(librarian.getEmail())
+                                                .build();
         return adminService.addLibrarian(librarianDto);
     }
 
     @PostMapping("delete/librarian")
-    public String   deleteLibrarian(@AuthenticationPrincipal User user,
-                                    @RequestParam String username,
-                                    Model model) {
-        model.addAttribute("user", user);
+    public ModelAndView deleteLibrarian(@AuthenticationPrincipal User user,
+                                        @RequestParam @Pattern(regexp = "[a-zA-Z]{1,20}", message = "Not valid username") String username) {
+        ModelAndView modelAndView = new ModelAndView("redirect:/user/profile/info");
+
+        modelAndView.addObject("user", user);
         try {
             LibrarianDto librarianDto = librarianService.findByUsername(username);
             adminService.deleteLibrarian(librarianDto);
-            model.addAttribute("message", "Librarian was deleted.");
+            modelAndView.addObject("message", "Librarian was deleted.");
         } catch (FoundNoInstanceException e) {
-            model.addAttribute("message", e.getMessage());
+            modelAndView.addObject("message", e.getMessage());
         }
-        return "redirect:/user/profile/info";
+        return modelAndView;
     }
 
     @PostMapping("de_activate/user")
-    public String   deActivateUser(@AuthenticationPrincipal User user,
-                                   @RequestParam String username,
-                                   @Pattern(regexp = "[(True|False)]") @RequestParam String active,
-                                   Model model) {
-        // active: True | False - Hibernate Validator
-        model.addAttribute("user", user);
+    public ModelAndView   deActivateUser(@AuthenticationPrincipal User user,
+                                         @RequestParam @Pattern(regexp = "[a-zA-Z]{1,20}", message = "Not valid username") String username,
+                                         @RequestParam @Pattern(regexp = "(True|False)") String active) {
+        ModelAndView modelAndView = new ModelAndView("redirect:/user/profile/info");
+
+        modelAndView.addObject("user", user);
         try {
             ReaderDto readerDto = readerService.findByUsername(username);
             adminService.deActiveReader(readerDto, Boolean.parseBoolean(active));
-            model.addAttribute("message", "User's status was changed");
+            modelAndView.addObject("message", "User's status was changed");
         } catch (FoundNoInstanceException e) {
-            model.addAttribute("message", e.getMessage());
+            modelAndView.addObject("message", e.getMessage());
         }
-        return "redirect:/user/profile/info";
+        return modelAndView;
     }
 
     @PostMapping(path = "add/book", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
-    public String   addBook(@AuthenticationPrincipal User user,
-                            @Valid BookFormCommand book,
-                            Model model,
-                            BindingResult bindingResult) {
-        model.addAttribute("user", user);
-        // pagination
-        // PRG
-        // Validation
-        if (bindingResult.hasErrors()) {
-            // TODO Validate form parameters
-            // handle if there are errors: use Bootstrap :valid, :invalid for input which contains errors
-        } else {
-            try {
-                adminService.addBook(registerBook(book));
-                model.addAttribute("message", "Book was added");
-            } catch (NotUniqueDataException e) {
-                model.addAttribute("message", e.getMessage());
-            }
+    public ModelAndView addBook(@AuthenticationPrincipal User user,
+                                @Valid BookFormCommand book) {
+        ModelAndView modelAndView = new ModelAndView("redirect:/user/profile/info");
+
+        modelAndView.addObject("user", user);
+        // TODO solve problem with simultaneous pagination and sorting
+        // TODO make page for validation errors
+        try {
+            adminService.addBook(fromBookFormToDto(book));
+            modelAndView.addObject("message", "Book was added");
+        } catch (NotUniqueDataException e) {
+            modelAndView.addObject("message", e.getMessage());
         }
-        return "redirect:/user/profile/info";
+        return modelAndView;
     }
 
-    private BookDto registerBook(BookFormCommand book) {
-        return new BookDto().setTitle(book.getTitle())
-                            .setAuthor(book.getAuthor())
-                            .setPublisher(book.getPublisher())
-                            .setPublishingDate(book.getPublishingDate())
-                            .setISBN(book.getISBN())
-                            .setQuantity(book.getQuantity());
+    private BookDto fromBookFormToDto(BookFormCommand book) {
+        BookDto bookDto = new BookDto();
+        bookDto.setTitle(book.getTitle());
+        bookDto.setAuthor(book.getAuthor());
+        bookDto.setPublisher(book.getPublisher());
+        if (book.getPublishingDate() != null) bookDto.setPublishingDate(book.getPublishingDate().toString());
+        bookDto.setISBN(book.getISBN());
+        if (book.getQuantity() != null) bookDto.setQuantity(book.getQuantity());
+
+        return bookDto;
     }
 
     @PostMapping("delete/book")
-    public String   deleteBook(@AuthenticationPrincipal User user,
-                               @RequestParam String ISBN,
-                               Model model) {
-        model.addAttribute("user", user);
-//        if (bindingResult.hasErrors()) {
-            // validate RequestParam
-//        } else {
-            try {
-                BookDto bookDto = bookService.findByISBN(ISBN);
-                adminService.deleteBook(bookDto);
-                model.addAttribute("message", "Book was successfully deleted.");
-            } catch (FoundNoInstanceException e) {
-                model.addAttribute("message", e.getMessage());
-            }
-//        }
-        return "redirect:/user/profile/info";
+    public ModelAndView   deleteBook(@AuthenticationPrincipal User user,
+                                     @RequestParam @ISBN String ISBN) {
+        ModelAndView modelAndView = new ModelAndView("redirect:/user/profile/info");
+        modelAndView.addObject("user", user);
+        try {
+            BookDto bookDto = bookService.findByISBN(ISBN);
+            adminService.deleteBook(bookDto);
+            modelAndView.addObject("message", "Book was successfully deleted.");
+        } catch (FoundNoInstanceException e) {
+            modelAndView.addObject("message", e.getMessage());
+        }
+        return modelAndView;
     }
 
     @PostMapping("update/book")
-    public String   updateBook(@AuthenticationPrincipal User user,
-                               BookFormCommand book,
-                               Model model) {
-        model.addAttribute("user", user);
-        try {
-            BookDto bookDto = getBookFromUpdateForm(book);
-            adminService.updateBook(bookDto);
-            model.addAttribute("message", "Book was successfully updated.");
-        } catch (FoundNoInstanceException e) {
-            model.addAttribute("message", e.getMessage());
-        }
-        return "redirect:/user/profile/info";
-    }
+    public ModelAndView   updateBook(@AuthenticationPrincipal User user,
+                                     @Valid BookFormCommand book) {
+        ModelAndView modelAndView = new ModelAndView("redirect:/user/profile/info");
 
-    private BookDto getBookFromUpdateForm(BookFormCommand bookFormCommand) {
-        return new BookDto().setTitle(bookFormCommand.getTitle())
-                            .setAuthor(bookFormCommand.getAuthor())
-                            .setPublisher(bookFormCommand.getPublisher())
-                            .setPublishingDate(bookFormCommand.getPublishingDate())
-                            .setISBN(bookFormCommand.getISBN())
-                            .setQuantity(bookFormCommand.getQuantity());
+        modelAndView.addObject("user", user);
+        try {
+            BookDto bookDto = fromBookFormToDto(book);
+            adminService.updateBook(bookDto);
+            modelAndView.addObject("message", "Book was successfully updated.");
+        } catch (FoundNoInstanceException e) {
+            modelAndView.addObject("message", e.getMessage());
+        }
+
+        return modelAndView;
     }
 
 }

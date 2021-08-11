@@ -1,16 +1,12 @@
 package edu.summer.spring.elibrary.dto.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @ToString
-@Accessors(chain = true)
+@Builder
 public class LibrarianDto {
     private String      username;
     private String      password;

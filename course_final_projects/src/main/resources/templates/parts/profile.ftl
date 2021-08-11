@@ -29,5 +29,4 @@
     </tbody>
 </table>
 <#nested>
-<a href="/">Back to catalogue</a>
 </#macro>

@@ -22,5 +22,5 @@ public interface BookService {
 
     BookDto orderBookById(Integer id, Integer loanPeriod, User user) throws FoundNoInstanceException, LoanDuplicateException, NoFreeBookException;
 
-    Page<Book> getBooksFromCataloguePage(String page);
+    Page<Book> getBooksFromCataloguePage(Integer page);
 }

@@ -7,10 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class LibrarianMapper {
     public static LibrarianDto toLibrarianDto(Librarian librarian) {
-        return new LibrarianDto().setUsername(librarian.getUser().getUsername())
-                                .setPassword(librarian.getUser().getPassword())
-                                .setFirstName(librarian.getUser().getFirstName())
-                                .setLastName(librarian.getUser().getLastName())
-                                .setEmail(librarian.getUser().getEmail());
+        return LibrarianDto.builder()
+                            .username(librarian.getUser().getUsername())
+                            .password(librarian.getUser().getPassword())
+                            .firstName(librarian.getUser().getFirstName())
+                            .lastName(librarian.getUser().getLastName())
+                            .email(librarian.getUser().getEmail())
+                            .build();
     }
 }

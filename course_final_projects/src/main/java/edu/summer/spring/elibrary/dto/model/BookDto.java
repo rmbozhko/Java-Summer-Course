@@ -1,21 +1,18 @@
 package edu.summer.spring.elibrary.dto.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @ToString
 @Accessors(chain = true)
+@NoArgsConstructor
 public class BookDto {
-    private String      title;
-    private String      author;
-    private String      publisher;
-    private String      publishingDate;
-    private String      ISBN;
-    private Integer     quantity;
+    @NonNull private String      title;
+    @NonNull private String      author;
+    @NonNull private String      publisher;
+    @NonNull private String      publishingDate;
+    @NonNull private String      ISBN;
+    @NonNull private Integer     quantity;
 }

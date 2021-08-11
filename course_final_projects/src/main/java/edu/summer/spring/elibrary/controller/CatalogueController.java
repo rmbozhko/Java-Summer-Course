@@ -12,21 +12,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Controller
+@Validated
 public class CatalogueController {
 
     @Autowired
     private BookService bookService;
 
     @GetMapping
-    public String   index(@RequestParam(defaultValue = "1", required = false) String page,
+    public String   index(@RequestParam(defaultValue = "1", required = false) @PositiveOrZero Integer page,
                           Model model) {
         Page<Book> cataloguePage = bookService.getBooksFromCataloguePage(page);
         model.addAttribute("books", cataloguePage.getContent());
@@ -35,7 +41,7 @@ public class CatalogueController {
     }
 
     @GetMapping("/search")
-    public String   searchByTitle(@RequestParam(defaultValue = "") String parameter,
+    public String   searchByTitle(@RequestParam(defaultValue = "") @NotBlank String parameter,
                                   Model model) {
         List<Book> books = (!parameter.isEmpty()) ? bookService.findAllByTitleOrAuthorOrISBN(parameter, parameter, parameter)
                                                         : bookService.findAll();
@@ -45,8 +51,11 @@ public class CatalogueController {
     }
 
     @GetMapping("/sort")
-    public String   sortByProperty(@RequestParam(value = "sortProperty", required = false, defaultValue = "") String sortPropertyValue,
-                                   Model model) {
+    public String   sortByProperty(@RequestParam(value = "sortProperty",
+                                                required = false,
+                                                defaultValue = "")
+                                                @Pattern(regexp = "(title|author|publisher|publishingDate)") String sortPropertyValue,
+                                                                        Model model) {
         Page<Book> sortedPage = bookService.sortByProperty(sortPropertyValue);
         model.addAttribute("books", sortedPage.getContent());
         model.addAttribute("pagesNum", sortedPage.getTotalPages());
@@ -54,10 +63,10 @@ public class CatalogueController {
     }
 
     @GetMapping("/book/{id}")
-    public String   getBook(@PathVariable String id,
+    public String   getBook(@PathVariable @PositiveOrZero Integer id,
                             Model model) {
         try {
-            BookDto bookDto = bookService.findById(Integer.valueOf(id));
+            BookDto bookDto = bookService.findById(id);
             model.addAttribute("book", bookDto);
         } catch (FoundNoInstanceException e) {
             model.addAttribute("message", e.getMessage());
@@ -67,11 +76,11 @@ public class CatalogueController {
 
     @PostMapping("/order/{id}")
     public String   orderBookById(@AuthenticationPrincipal User user,
-                                  @PathVariable String id,
-                                  @RequestParam(name = "loan_period") String loanPeriod,
+                                  @PathVariable @PositiveOrZero Integer id,
+                                  @RequestParam(name = "loan_period") @Positive Integer loanPeriod,
                                   Model model) {
         try {
-            BookDto bookDto = bookService.orderBookById(Integer.valueOf(id), Integer.parseInt(loanPeriod), user);
+            BookDto bookDto = bookService.orderBookById(id, loanPeriod, user);
             model.addAttribute("message", String.format("You have successfully lent the book: %s for %s day(s)", bookDto.getTitle(),
                                                                                                                     loanPeriod));
         } catch (FoundNoInstanceException | LoanDuplicateException | NoFreeBookException e) {

@@ -12,14 +12,15 @@ import edu.summer.spring.elibrary.service.ReaderService;
 import edu.summer.spring.elibrary.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
     @Autowired
@@ -35,29 +36,29 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/profile/info")
-    public String   getInfo(@AuthenticationPrincipal User user, Model model) {
-        String info = "404";
+    public ModelAndView getInfo(@AuthenticationPrincipal User user, Model model) {
+        ModelAndView modelAndView = new ModelAndView("404");
         try {
             User userFromDb = userService.findByUsername(user.getUsername());
             model.addAttribute("user", userFromDb);
             Role role = userFromDb.getRole();
             switch (role) {
                 case READER:
-                    info = getReaderInfo(user, model);
+                    modelAndView.setViewName(getReaderInfo(user, model));
                     break;
                 case LIBRARIAN:
-                    info = getLibrarianInfo(user, model);
+                    modelAndView.setViewName(getLibrarianInfo(user, model));
                     break;
                 case ADMIN:
-                    info = getAdminInfo();
+                    modelAndView.setViewName(getAdminInfo());
                     break;
                 default:
-                    info = "404";
+                    modelAndView.setViewName("404");
             }
         } catch (FoundNoInstanceException e) {
             model.addAttribute("message", e.getMessage());
         }
-        return info;
+        return modelAndView;
     }
 
     private String getAdminInfo() {
