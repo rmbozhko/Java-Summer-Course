@@ -96,13 +96,15 @@ public class AdminServiceImpl implements AdminService {
         if (bookFromDb.isPresent()) {
             throw new NotUniqueDataException("Not unique ISBN", bookFromDb.get().getISBN());
         } else {
-            Book book = new Book(bookDto.getTitle(),
-                    bookDto.getAuthor(),
-                    bookDto.getPublisher(),
-                    LocalDate.parse(bookDto.getPublishingDate(),
-                            DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)),
-                    bookDto.getISBN(),
-                    bookDto.getQuantity());
+            Book book = Book.builder()
+                            .title(bookDto.getTitle())
+                            .author(bookDto.getAuthor())
+                            .publisher(bookDto.getPublisher())
+                            .publishingDate(LocalDate.parse(bookDto.getPublishingDate(),
+                                    DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)))
+                            .ISBN(bookDto.getISBN())
+                            .quantity(bookDto.getQuantity())
+                            .build();
             return BookMapper.toBookDto(bookRepository.save(book));
         }
     }
@@ -112,7 +114,7 @@ public class AdminServiceImpl implements AdminService {
         Book book = bookRepository.findBookByISBN(bookDto.getISBN())
                                 .orElseThrow(() -> new FoundNoInstanceException("No book found with specified ISBN."));
         loanRepository.deleteLoansByBook(book); // every loan with book to delete will be deleted
-        bookRepository.delete(book); // return value should be 1
+        bookRepository.delete(book);
         return BookMapper.toBookDto(book);
     }
 

@@ -42,7 +42,6 @@ public class ReaderServiceImpl implements ReaderService {
         if (userRepository.findByUsername(readerDto.getUsername()).isPresent()) {
             throw new NotUniqueDataException("Not unique username", readerDto.getUsername());
         }
-        //TODO Use Builder instead of this ...
         User user = new User(readerDto.getUsername(), encoder.encode(readerDto.getPassword()),
                             readerDto.getFirstName(), readerDto.getLastName(),
                             readerDto.getEmail());
