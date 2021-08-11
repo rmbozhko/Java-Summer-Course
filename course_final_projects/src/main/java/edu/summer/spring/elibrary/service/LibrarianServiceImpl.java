@@ -10,11 +10,11 @@ import edu.summer.spring.elibrary.repository.LibrarianRepository;
 import edu.summer.spring.elibrary.repository.LoanRepository;
 import edu.summer.spring.elibrary.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 public class LibrarianServiceImpl implements LibrarianService {
     @Autowired
     private UserRepository userRepository;

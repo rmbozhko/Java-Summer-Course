@@ -9,14 +9,14 @@ import edu.summer.spring.elibrary.repository.LoanRepository;
 import edu.summer.spring.elibrary.repository.SubscriptionRepository;
 import edu.summer.spring.elibrary.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
-@Component
+@Service
 public class LoanServiceImpl implements LoanService {
 
     @Autowired
