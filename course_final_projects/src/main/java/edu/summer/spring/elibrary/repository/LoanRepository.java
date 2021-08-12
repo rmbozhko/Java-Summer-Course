@@ -13,6 +13,4 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     List<Loan> findAllByLibrarian(Librarian librarian);
 
     long deleteLoansByBook(Book book);
-
-    boolean existsLoanByBookAndSubscription(Book book, Subscription subscription);
 }

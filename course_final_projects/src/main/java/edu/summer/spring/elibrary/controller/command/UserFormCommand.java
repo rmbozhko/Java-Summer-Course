@@ -21,10 +21,10 @@ public class UserFormCommand {
     @NotBlank
     String password;
 
-    @Pattern(regexp = "[a-zA-Z]")
+    @Pattern(regexp = "[a-zA-Z]+")
     String firstName;
 
-    @Pattern(regexp = "[a-zA-Z]")
+    @Pattern(regexp = "[a-zA-Z]+")
     String lastName;
 
     @Email

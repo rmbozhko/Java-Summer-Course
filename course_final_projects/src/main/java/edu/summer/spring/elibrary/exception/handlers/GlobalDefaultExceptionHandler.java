@@ -22,7 +22,7 @@ public class GlobalDefaultExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
 //    @ResponseBody
     public ModelAndView handleConstraintViolationException(ConstraintViolationException e) {
-        ModelAndView modelAndView = new ModelAndView("validation_error");
+        ModelAndView modelAndView = new ModelAndView("redirect:/validation_error");
         ValidationErrorResponse error = new ValidationErrorResponse();
         for (ConstraintViolation violation : e.getConstraintViolations()) {
             error.getViolations().add(
@@ -37,7 +37,7 @@ public class GlobalDefaultExceptionHandler {
 //    @ResponseBody
     public ModelAndView onMethodArgumentNotValidException(
             MethodArgumentNotValidException e) {
-        ModelAndView modelAndView = new ModelAndView("validation_error");
+        ModelAndView modelAndView = new ModelAndView("redirect:/validation_error");
         ValidationErrorResponse error = new ValidationErrorResponse();
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             error.getViolations().add(
@@ -52,7 +52,7 @@ public class GlobalDefaultExceptionHandler {
 //    @ResponseBody
     public ModelAndView onBindException(
             BindingResult e) {
-        ModelAndView modelAndView = new ModelAndView("validation_error");
+        ModelAndView modelAndView = new ModelAndView("redirect:/validation_error");
         ValidationErrorResponse error = new ValidationErrorResponse();
         for (FieldError fieldError : e.getFieldErrors()) {
             error.getViolations().add(
