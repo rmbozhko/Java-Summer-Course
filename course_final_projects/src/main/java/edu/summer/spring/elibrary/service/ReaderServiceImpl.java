@@ -11,9 +11,11 @@ import edu.summer.spring.elibrary.model.Subscription;
 import edu.summer.spring.elibrary.model.User;
 import edu.summer.spring.elibrary.repository.ReaderRepository;
 import edu.summer.spring.elibrary.repository.SubscriptionRepository;
+import edu.summer.spring.elibrary.repository.TransactionalEntityManager;
 import edu.summer.spring.elibrary.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,21 +39,24 @@ public class ReaderServiceImpl implements ReaderService {
     @Autowired
     private SubscriptionRepository subscriptionRepository;
 
+    @Autowired
+    private TransactionalEntityManager entityManager;
+
     @Override
     public ReaderDto addReader(ReaderDto readerDto) throws NotUniqueDataException {
-        // TODO Catch Exception from DB if username isn't unique
-        if (userRepository.findByUsername(readerDto.getUsername()).isPresent()) {
-            throw new NotUniqueDataException("Not unique username", readerDto.getUsername());
-        }
         readerDto.setPassword(encoder.encode(readerDto.getPassword()));
         User user = UserMapper.toUser(readerDto);
         user.setActive(true);
         user.setRole(Role.READER);
-        userRepository.save(user);
         Subscription subscription = new Subscription(user, UUID.randomUUID().toString());
         Reader reader = new Reader(user, subscription);
-        subscriptionRepository.save(subscription);
-        readerRepository.save(reader);
+        try {
+            entityManager.saveEntity(userRepository, user);
+            entityManager.saveEntity(subscriptionRepository, subscription);
+            entityManager.saveEntity(readerRepository, reader);
+        } catch (DataIntegrityViolationException e) {
+            throw new NotUniqueDataException("Not unique username");
+        }
         return ReaderMapper.toReaderDto(reader);
     }
 

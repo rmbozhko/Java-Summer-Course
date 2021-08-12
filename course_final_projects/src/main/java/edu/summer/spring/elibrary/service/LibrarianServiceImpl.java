@@ -8,9 +8,11 @@ import edu.summer.spring.elibrary.model.Loan;
 import edu.summer.spring.elibrary.model.User;
 import edu.summer.spring.elibrary.repository.LibrarianRepository;
 import edu.summer.spring.elibrary.repository.LoanRepository;
+import edu.summer.spring.elibrary.repository.TransactionalEntityManager;
 import edu.summer.spring.elibrary.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +26,9 @@ public class LibrarianServiceImpl implements LibrarianService {
 
     @Autowired
     private LoanRepository loanRepository;
+
+    @Autowired
+    private TransactionalEntityManager entityManager;
 
     @Override
     public LibrarianDto findByUsername(String username) throws FoundNoInstanceException {
@@ -46,7 +51,7 @@ public class LibrarianServiceImpl implements LibrarianService {
                                     ).get()
                                 ).get();
         librarian.setPresent(present);
-        librarianRepository.save(librarian);
+        entityManager.saveEntity(librarianRepository, librarian);
         return LibrarianMapper.toLibrarianDto(librarian);
     }
 
